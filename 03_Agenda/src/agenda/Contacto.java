@@ -1,14 +1,15 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Ejemplo para probar:
+ *  - Sobrecarga
+ *  - Metodos get / set
+ *  - Sobreescritura
  */
 
 package agenda;
 
 /**
  *
- * @author franchux@gmail.com
- * @
+ * @author francho
  */
 public class Contacto {
     private String nombre;
@@ -60,14 +61,59 @@ public class Contacto {
         this(nombre);
         this.telefonoFijo = telefono;
     }
+
+
     
     /**
-     * Sobreescribimos un método heredado de la superclase object
-     * Preparamos nuestro objeto para que pueda ser mostrado correctamente.
+     * Sobreescribimos los métodos heredados de la superclase object.
+     * Conviene sobreescribir por lo menos:
+     *  - equals()
+     *  - hashCode()
+     *  - toString()
+     *
      * 
      * Override es una anotación que indica que estamos sobreescribiendo
      */
-    
+
+    @Override
+    public boolean equals(Object otro) {
+        boolean iguales = false;
+
+        // 1º .- Nos aseguramos que los dos objetos son de la misma clase
+        if(otro.getClass().equals(this.getClass())) {
+            // 2º.- Convertimos el objeto recibido a nuestra clase para poder comparar
+            Contacto otroContacto = (Contacto) otro;
+
+            // Comparamos las propiedades difernciadoras
+            
+            //String x = (this.nombre + this.primerApellido + this.segundoApellido);
+            //String y = (otroContacto.nombre + otroContacto.primerApellido + otroContacto.segundoApellido);
+            // iguales = x.equals(y);
+
+            
+
+            // Otra forma de hacerlo
+              iguales = this.hashCode() == otroContacto.hashCode() ;
+            //
+        }
+        return iguales;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 79 * hash + (this.nombre != null ? this.nombre.hashCode() : 0);
+        hash = 79 * hash + (this.primerApellido != null ? this.primerApellido.hashCode() : 0);
+        hash = 79 * hash + (this.segundoApellido != null ? this.segundoApellido.hashCode() : 0);
+        return hash;
+    }
+
+
+   /**
+    * Preparamos nuestro objeto para que pueda ser mostrado correctamente.
+    */
+
     @Override
     public String toString() {
        String cadena="";

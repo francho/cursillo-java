@@ -25,6 +25,19 @@ public class Main {
         miContacto.setDireccion("c\\ Bajo el puente.");
 
         System.out.println(miContacto.toString());
+
+        // Probamos nuestro equals
+        
+        Contacto otroContacto = new agenda.Contacto("Liborio",123123123);
+        otroContacto.setPrimerApellido("Lopez");
+        otroContacto.setSegundoApellido("García");
+
+        System.out.println(miContacto.equals(otroContacto));
+
+        // Comprobamos los hashCodes
+        System.out.println("HashCodes: " + miContacto.hashCode() + " = " + otroContacto.hashCode());
+
+
     }
 
 }
