@@ -1,0 +1,225 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package agenda;
+
+/**
+ *
+ * @author franchux@gmail.com
+ * @
+ */
+public class Contacto {
+    private String nombre;
+    private String primerApellido;
+    private String segundoApellido;
+    private long telefonoFijo;
+    private long telefonoMovil;
+    private String email;
+    private String direccion;
+
+
+    /**
+     * Constructor "Por defecto" de la clase
+     * Inicializa las propiedades de la clase
+     */
+    public Contacto() {
+        this.nombre = "";
+        this.primerApellido = "";
+        this.segundoApellido = "";
+        this.telefonoFijo = 111111111;
+        this.telefonoMovil = 111111111;
+        this.email = "yo@yo.com";
+        this.direccion = "";
+    }
+
+    /**
+     * Sobrecargamos el constructor
+     *
+     * Lo hacemos privado, porque ¿para que queremos un contacto con sólo nombre?
+     *
+     */
+    
+    private Contacto(String nombre) {
+        // Accedemos al constructor por defecto
+        // Esto solo se puede hacer desde los constructores
+        this();
+        
+        // Una vez cargados los datos por defecto, cargamos el parametro
+        this.nombre=nombre;
+    }
+
+    /**
+     * Otro ejemplo de constructor
+     *
+     */
+
+    public Contacto(String nombre, long telefono) {
+        // Llamamos primero al constructor que recibe nombre
+        this(nombre);
+        this.telefonoFijo = telefono;
+    }
+    
+    /**
+     * Sobreescribimos un método heredado de la superclase object
+     * Preparamos nuestro objeto para que pueda ser mostrado correctamente.
+     * 
+     * Override es una anotación que indica que estamos sobreescribiendo
+     */
+    
+    @Override
+    public String toString() {
+       String cadena="";
+       
+       if(! this.nombre.equals("")) {
+           cadena += "Nombre: " + this.nombre;
+           if(! this.primerApellido.equals("")) {
+               cadena += " " + this.primerApellido;
+               if(! this.segundoApellido.equals("")) {
+                   cadena += " " + this.segundoApellido;
+               }
+           }
+           cadena += "\n";
+       } else {
+           cadena += "(Nombre desconocido)\n";
+       }
+
+       if(this.telefonoFijo != 111111111) {
+           cadena += "Tlf: " + this.telefonoFijo + "\n";
+       }
+
+       if(this.telefonoMovil != 111111111) {
+           cadena += "Móvil:" + this.telefonoMovil + "\n";
+       }
+
+       if(! this.email.equals("yo@yo.com")) {
+           cadena += "Email: " + this.email + "\n";
+       }
+
+       if(! this.direccion.equals("")) {
+           cadena += "Direccion: " + this.direccion + "\n";
+       }
+
+       return cadena;
+    }
+
+
+    /*************************************************************
+     * Funciones generadas automaticamente con el Netbeans
+     *
+     * Boton Dcho / Reestructurar / Encapsular Campos
+     *************************************************************/
+
+    /**
+     * @return the nombre
+     */
+    public String getNombre()
+    {
+        return nombre;
+    }
+
+    /**
+     * @param nombre the nombre to set
+     */
+    public void setNombre(String nombre)
+    {
+        this.nombre = nombre;
+    }
+
+    /**
+     * @return the primerApellido
+     */
+    public String getPrimerApellido()
+    {
+        return primerApellido;
+    }
+
+    /**
+     * @param primerApellido the primerApellido to set
+     */
+    public void setPrimerApellido(String primerApellido)
+    {
+        this.primerApellido = primerApellido;
+    }
+
+    /**
+     * @return the segundoApellido
+     */
+    public String getSegundoApellido()
+    {
+        return segundoApellido;
+    }
+
+    /**
+     * @param segundoApellido the segundoApellido to set
+     */
+    public void setSegundoApellido(String segundoApellido)
+    {
+        this.segundoApellido = segundoApellido;
+    }
+
+    /**
+     * @return the telefonoFijo
+     */
+    public long getTelefonoFijo()
+    {
+        return telefonoFijo;
+    }
+
+    /**
+     * @param telefonoFijo the telefonoFijo to set
+     */
+    public void setTelefonoFijo(long telefonoFijo)
+    {
+        this.telefonoFijo = telefonoFijo;
+    }
+
+    /**
+     * @return the telefonoMovil
+     */
+    public long getTelefonoMovil()
+    {
+        return telefonoMovil;
+    }
+
+    /**
+     * @param telefonoMovil the telefonoMovil to set
+     */
+    public void setTelefonoMovil(long telefonoMovil)
+    {
+        this.telefonoMovil = telefonoMovil;
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail()
+    {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email)
+    {
+        this.email = email;
+    }
+
+    /**
+     * @return the direccion
+     */
+    public String getDireccion()
+    {
+        return direccion;
+    }
+
+    /**
+     * @param direccion the direccion to set
+     */
+    public void setDireccion(String direccion)
+    {
+        this.direccion = direccion;
+    }
+}
