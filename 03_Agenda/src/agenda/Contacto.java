@@ -4,17 +4,18 @@
  *  - Metodos get / set
  *  - Sobreescritura
  */
-
 package agenda;
 
 /**
  * Almacena los datos de un contacto.
  *
  * @author francho
- * @version $Id:$
+ * @version $Id$
  * @since
  */
-public class Contacto {
+public class Contacto
+{
+
     protected String nombre;
     protected String primerApellido;
     protected String segundoApellido;
@@ -23,12 +24,12 @@ public class Contacto {
     protected String email;
     protected String direccion;
 
-
     /**
      * Constructor "Por defecto" de la clase
      * Inicializa las propiedades de la clase
      */
-    public Contacto() {
+    public Contacto()
+    {
         this.nombre = "";
         this.primerApellido = "";
         this.segundoApellido = "";
@@ -44,29 +45,27 @@ public class Contacto {
      * Lo hacemos privado, porque ¿para que queremos un contacto con sólo nombre?
      *
      */
-   
-    private Contacto(String nombre) {
+    private Contacto(String nombre)
+    {
         // Accedemos al constructor por defecto
         // Esto solo se puede hacer desde los constructores
         this();
-        
+
         // Una vez cargados los datos por defecto, cargamos el parametro
-        this.nombre=nombre;
+        this.nombre = nombre;
     }
 
     /**
      * Otro ejemplo de constructor
      *
      */
-
-    public Contacto(String nombre, long telefono) {
+    public Contacto(String nombre, long telefono)
+    {
         // Llamamos primero al constructor que recibe nombre
         this(nombre);
         this.telefonoFijo = telefono;
     }
 
-
-    
     /*
      * Sobreescribimos los métodos heredados de la superclase object.
      * Conviene sobreescribir por lo menos:
@@ -77,8 +76,6 @@ public class Contacto {
      * 
      * Override es una anotación que indica que estamos sobreescribiendo
      */
-
-
     /**
      * Compara dos contactos.
      *
@@ -88,29 +85,37 @@ public class Contacto {
      * @return ver explicación general
      */
     @Override
-    public boolean equals(Object otro) {
+    public boolean equals(Object otro)
+    {
         boolean iguales = false;
 
         // 1º .- Nos aseguramos que los dos objetos son de la misma clase
-        if(otro.getClass().equals(this.getClass())) {
+        if (otro.getClass().equals(this.getClass())) {
             // 2º.- Convertimos el objeto recibido a nuestra clase para poder comparar
             Contacto otroContacto = (Contacto) otro;
 
             // Comparamos las propiedades difernciadoras
-            
+
             //String x = (this.nombre + this.primerApellido + this.segundoApellido);
             //String y = (otroContacto.nombre + otroContacto.primerApellido + otroContacto.segundoApellido);
             // iguales = x.equals(y);
 
-            
+
 
             // Otra forma de hacerlo
-              iguales = this.hashCode() == otroContacto.hashCode() ;
-            //
+            iguales = this.hashCode() == otroContacto.hashCode();
+        //
         }
         return iguales;
     }
 
+    /**
+     * Genera el hashCode de la clase Contacto.
+     *
+     * Esta funcion ha sido generadada automáticamente por el netBeans
+     *
+     * @return hashCode int
+     */
     @Override
     public int hashCode()
     {
@@ -121,54 +126,53 @@ public class Contacto {
         return hash;
     }
 
-
-   /**
-    * Preparamos nuestro objeto para que pueda ser mostrado correctamente.
-    */
-
+    /**
+     * Convierte los datos del contacto en cadena.
+     *
+     * @return String cadena con los datos rellenados (usa saltos de linea)
+     */
     @Override
-    public String toString() {
-       String cadena="";
-       
-       if(! this.nombre.equals("")) {
-           cadena += "Nombre: " + this.nombre;
-           if(! this.primerApellido.equals("")) {
-               cadena += " " + this.primerApellido;
-               if(! this.segundoApellido.equals("")) {
-                   cadena += " " + this.segundoApellido;
-               }
-           }
-           cadena += "\n";
-       } else {
-           cadena += "(Nombre desconocido)\n";
-       }
+    public String toString()
+    {
+        String cadena = "";
 
-       if(this.telefonoFijo != 111111111) {
-           cadena += "Tlf: " + this.telefonoFijo + "\n";
-       }
+        if (!this.nombre.equals("")) {
+            cadena += "Nombre: " + this.nombre;
+            if (!this.primerApellido.equals("")) {
+                cadena += " " + this.primerApellido;
+                if (!this.segundoApellido.equals("")) {
+                    cadena += " " + this.segundoApellido;
+                }
+            }
+            cadena += "\n";
+        } else {
+            cadena += "(Nombre desconocido)\n";
+        }
 
-       if(this.telefonoMovil != 111111111) {
-           cadena += "Móvil:" + this.telefonoMovil + "\n";
-       }
+        if (this.telefonoFijo != 111111111) {
+            cadena += "Tlf: " + this.telefonoFijo + "\n";
+        }
 
-       if(! this.email.equals("yo@yo.com")) {
-           cadena += "Email: " + this.email + "\n";
-       }
+        if (this.telefonoMovil != 111111111) {
+            cadena += "Móvil:" + this.telefonoMovil + "\n";
+        }
 
-       if(! this.direccion.equals("")) {
-           cadena += "Direccion: " + this.direccion + "\n";
-       }
+        if (!this.email.equals("yo@yo.com")) {
+            cadena += "Email: " + this.email + "\n";
+        }
 
-       return cadena;
+        if (!this.direccion.equals("")) {
+            cadena += "Direccion: " + this.direccion + "\n";
+        }
+
+        return cadena;
     }
-
 
     /*************************************************************
      * Funciones generadas automaticamente con el Netbeans
      *
      * Boton Dcho / Reestructurar / Encapsular Campos
      *************************************************************/
-
     /**
      * @return the nombre
      */

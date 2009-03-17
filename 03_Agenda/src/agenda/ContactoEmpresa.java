@@ -33,7 +33,9 @@ public class ContactoEmpresa extends Contacto {
     }
 
     /**
-     * Sobreescribimos lo necesario
+     * Convierte los datos del contacto en cadena.
+     *
+     * @return String cadena con los datos rellenados (usa saltos de linea)
      */
     @Override
     public String toString() {
