@@ -8,17 +8,20 @@
 package agenda;
 
 /**
+ * Almacena los datos de un contacto.
  *
  * @author francho
+ * @version $Id:$
+ * @since
  */
 public class Contacto {
-    private String nombre;
-    private String primerApellido;
-    private String segundoApellido;
-    private long telefonoFijo;
-    private long telefonoMovil;
-    private String email;
-    private String direccion;
+    protected String nombre;
+    protected String primerApellido;
+    protected String segundoApellido;
+    protected long telefonoFijo;
+    protected long telefonoMovil;
+    protected String email;
+    protected String direccion;
 
 
     /**
@@ -36,12 +39,12 @@ public class Contacto {
     }
 
     /**
-     * Sobrecargamos el constructor
+     * Sobrecargamos el constructor.
      *
      * Lo hacemos privado, porque ¿para que queremos un contacto con sólo nombre?
      *
      */
-    
+   
     private Contacto(String nombre) {
         // Accedemos al constructor por defecto
         // Esto solo se puede hacer desde los constructores
@@ -64,7 +67,7 @@ public class Contacto {
 
 
     
-    /**
+    /*
      * Sobreescribimos los métodos heredados de la superclase object.
      * Conviene sobreescribir por lo menos:
      *  - equals()
@@ -75,6 +78,15 @@ public class Contacto {
      * Override es una anotación que indica que estamos sobreescribiendo
      */
 
+
+    /**
+     * Compara dos contactos.
+     *
+     * Devuelve true si los nombres y los apellidos son iguales y false en caso contrario
+     *
+     * @param otro el contacto a comparar
+     * @return ver explicación general
+     */
     @Override
     public boolean equals(Object otro) {
         boolean iguales = false;

@@ -37,7 +37,19 @@ public class Main {
         // Comprobamos los hashCodes
         System.out.println("HashCodes: " + miContacto.hashCode() + " = " + otroContacto.hashCode());
 
+        // Probamos nuestra clase heredada      
+        ContactoEmpresa miEmpresa = new ContactoEmpresa("Liborio", 123123123);
+        miEmpresa.setPrimerApellido("Lopez");
+        miEmpresa.setSegundoApellido("García");
 
+        miEmpresa.setEmpresa("ACME S.L.");
+        miEmpresa.setDepartamento("Sistemas");
+        miEmpresa.setExtension(10);
+
+        System.out.println(miEmpresa.toString());
+
+        System.out.println(miEmpresa.equals(otroContacto));
+        System.out.println("HashCodes: " + miContacto.hashCode() + " = " + miEmpresa.hashCode());
     }
 
 }
