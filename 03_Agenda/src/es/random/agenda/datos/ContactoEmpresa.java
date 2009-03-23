@@ -9,7 +9,9 @@ package es.random.agenda.datos;
 /**
  * Clase que para gestionar los contactos tipo empresa
  *
- * @author francho
+ * @author: $Author$
+ * @version: $Rev$
+ * @Fecha: $Date$
  */
 public class ContactoEmpresa extends Contacto {
     protected String empresa;
