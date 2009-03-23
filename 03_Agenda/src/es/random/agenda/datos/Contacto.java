@@ -9,9 +9,9 @@ package es.random.agenda.datos;
 /**
  * Almacena los datos de un contacto.
  *
- * @author francho
- * @version $Revision$
- * @since
+ * @author: $Author$
+ * @version: $Rev$
+ * @Fecha: $Date$
  */
 public class Contacto
 {
