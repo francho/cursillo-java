@@ -4,9 +4,9 @@
  *
  */
 
-package agenda;
+package es.random.agenda.datos;
 
-import agenda.Contacto;
+import es.random.agenda.datos.Contacto;
 
 /**
  * Clase que para gestionar los contactos tipo empresa
