@@ -4,7 +4,7 @@
  *
  */
 
-package agenda;
+package es.random.agenda.datos;
 
 /**
  * Clase que para gestionar los contactos tipo empresa

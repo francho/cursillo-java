@@ -4,13 +4,13 @@
  *  - Metodos get / set
  *  - Sobreescritura
  */
-package agenda;
+package es.random.agenda.datos;
 
 /**
  * Almacena los datos de un contacto.
  *
  * @author francho
- * @version $Id$
+ * @version $Revision$
  * @since
  */
 public class Contacto
