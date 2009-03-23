@@ -11,7 +11,8 @@ package es.random.agenda.datos;
  *
  * @author: $Author$
  * @version: $Rev$
- * @Fecha: $Date$
+ * @date: $Date$
+ * $Id$
  */
 public class ContactoEmpresa extends Contacto {
     protected String empresa;
@@ -24,7 +25,7 @@ public class ContactoEmpresa extends Contacto {
      * Inicializa los valores:
      * - Tipos cadena a ""
      * - extension a 0
-     * - telefonoFijo y telefonoMovil a 111111111
+     * - telefonoFijo y telefonoMovil a 900555555
      * - email a yo@yo.com
      */
     public ContactoEmpresa() {

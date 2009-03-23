@@ -10,7 +10,10 @@ import es.random.agenda.datos.Contacto;
 
 /**
  *
- * @author francho
+ * @author: $Author$
+ * @version: $Rev$
+ * @date: $Date$
+ * $Id$
  */
 public class Main {
 
@@ -31,7 +34,7 @@ public class Main {
 
         // Probamos nuestro equals
         
-        Contacto otroContacto = new es.random.agenda.datos.Contacto("Liborio",123123123);
+        Contacto otroContacto = new Contacto("Liborio",123123123);
         otroContacto.setPrimerApellido("Lopez");
         otroContacto.setSegundoApellido("García");
 
