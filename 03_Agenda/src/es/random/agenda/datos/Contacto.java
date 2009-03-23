@@ -12,6 +12,7 @@ package es.random.agenda.datos;
  * @author: $Author$
  * @version: $Rev$
  * @Fecha: $Date$
+ * $id$
  */
 public class Contacto
 {
