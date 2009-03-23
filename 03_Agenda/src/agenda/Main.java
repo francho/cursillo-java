@@ -17,7 +17,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Contacto miContacto = new es.random.agenda.datos.Contacto("Liborio",976123123);
+        Contacto miContacto = new agenda.Contacto("Liborio",976123123);
 
         miContacto.setPrimerApellido("Lopez");
         miContacto.setSegundoApellido("García");
@@ -30,7 +30,7 @@ public class Main {
 
         // Probamos nuestro equals
         
-        Contacto otroContacto = new es.random.agenda.datos.Contacto("Liborio",123123123);
+        Contacto otroContacto = new agenda.Contacto("Liborio",123123123);
         otroContacto.setPrimerApellido("Lopez");
         otroContacto.setSegundoApellido("García");
 
