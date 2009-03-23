@@ -95,15 +95,13 @@ public class Contacto
             Contacto otroContacto = (Contacto) otro;
 
             // Comparamos las propiedades difernciadoras
+            String x = (this.nombre + this.primerApellido + this.segundoApellido);
+            String y = (otroContacto.nombre + otroContacto.primerApellido + otroContacto.segundoApellido);
 
-            //String x = (this.nombre + this.primerApellido + this.segundoApellido);
-            //String y = (otroContacto.nombre + otroContacto.primerApellido + otroContacto.segundoApellido);
-            // iguales = x.equals(y);
-
-
+            iguales = x.equals(y);
 
             // Otra forma de hacerlo
-            iguales = this.hashCode() == otroContacto.hashCode();
+            // iguales = this.hashCode() == otroContacto.hashCode();
         //
         }
         return iguales;
