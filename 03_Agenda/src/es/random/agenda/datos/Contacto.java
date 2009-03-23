@@ -33,8 +33,8 @@ public class Contacto
         this.nombre = "";
         this.primerApellido = "";
         this.segundoApellido = "";
-        this.telefonoFijo = 111111111;
-        this.telefonoMovil = 111111111;
+        this.telefonoFijo = 900555555;
+        this.telefonoMovil = 900555555;
         this.email = "yo@yo.com";
         this.direccion = "";
     }
@@ -149,11 +149,11 @@ public class Contacto
             cadena += "(Nombre desconocido)\n";
         }
 
-        if (this.telefonoFijo != 111111111) {
+        if (this.telefonoFijo != 900555555) {
             cadena += "Tlf: " + this.telefonoFijo + "\n";
         }
 
-        if (this.telefonoMovil != 111111111) {
+        if (this.telefonoMovil != 900555555) {
             cadena += "Móvil:" + this.telefonoMovil + "\n";
         }
 
