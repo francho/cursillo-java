@@ -1,5 +1,14 @@
 /*
- * El controlador de nuestra aplicaciones
+ * Clase que contiene un array de numeros enteros
+ *
+ * Debe poder:
+ *  - Añadir un entero
+ *  - Borrar un entero
+ *  - Buscar la posicion de un entero
+ *  - Comprobar si contiene un valor
+ *
+ * Condiciones:
+ *  - El array debe estar ordenado
  *
  */
 
@@ -55,23 +64,28 @@ public class GestorAgenda {
         Contacto[] nuevaLista = new Contacto[contactos.length - 1];
 
         int y = 0;
-        for(int x = 0; x < contactos.length - 1; x++) {
+        for(int x = 0; x < contactos.length ; x++) {
             if(x != indice) {
-                nuevaLista[y++] = contactos[x];
+                nuevaLista[y] = contactos[x];
+                y++;
             }
         }
         contactos = nuevaLista;
     }
 
     /**
-     * Borra un contacto
+     * Borra un contacto a partir de un objeto contacto
+     *
+     * Primero busca su indice y luego llama a borrar por indice
      *
      * @param aEliminar objeto de tipo Contacto
      */
 
     public void borrarContacto(Contacto aEliminar) {
-        // Buscar indice
-        // Llamar a borrar por ind
+        int indice = posicionDe(aEliminar);
+        if(indice > -1) {
+            borrarContacto(indice);
+        }
     }
 
 
@@ -86,11 +100,62 @@ public class GestorAgenda {
      * @param nombre nombre a borrar
      */
     public void borrarContacto(String[] nombre) {
-        // Crear nuevo objeto
-        // Llamar a borrar pasando el contacto
+
+        if(nombre.length > 0) {
+            Contacto c = new Contacto();
+            c.setNombre(nombre[0]);
+            if(nombre.length > 1) {
+                c.setPrimerApellido(nombre[1]);
+            } else if(nombre.length > 2) {
+                c.setSegundoApellido(nombre[2]);
+            }
+            borrarContacto(c);
+        }
     }
     
-    public int buscarIndiceContacto(Contacto aBuscar) {
-        // TODO -
+    public int posicionDe(Contacto aBuscar) {
+        int i=0;
+        int encontrado = -1;
+
+        do {
+            if(contactos[i].equals(aBuscar)) {
+                encontrado = i;
+            }          
+        } while( (i++ < contactos.length) && ( encontrado == -1 ) );
+
+
+        return encontrado;
+    }
+
+    /**
+     * Envoltorio de la funcion posicionDe
+     *
+     * @param aBuscar Contacto a buscar
+     * @return true si está en la coleccion, false sino
+     */
+    public boolean contieneContacto(Contacto aBuscar) {
+        return (posicionDe(aBuscar) > -1);
+    }
+
+    /**
+     * Genera una cadena con todos los contactos separados por saltos de linea
+     *
+     * @return cadena con los contactos
+     */
+    @Override
+    public String toString() {
+        String cadena = "";
+
+        int x=0;
+
+        System.out.println(contactos.length);
+
+        // Otra forma de bucle
+        // Recorre colecciones de datos (similar al foreach de php)
+        for(Contacto c: contactos) {
+            cadena += "\n("+ x++ +") \n" + c.toString();
+        }
+
+        return cadena;
     }
 }
