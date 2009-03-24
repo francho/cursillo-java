@@ -20,9 +20,9 @@ public class ArrayEnterosUnicos extends ArrayEnteros {
      * @param num numero a añadir
      */
     @Override
-    public void añadir(int num) {
-        if(! this.contiene(num)) {
-            this.insertar(num);
+    public void añadir(int numero) {
+        if(! this.contiene(numero)) {
+            this.insertarOrdenado(numero);
         }
     }
 }

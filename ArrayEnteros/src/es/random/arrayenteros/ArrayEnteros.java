@@ -29,24 +29,29 @@ public class ArrayEnteros
         enteros = new int[0];
     }
 
-    public void añadir(int num) {
-        insertar(num);
+    /**
+     * Añade un número a la lista
+     *
+     * @param numero a insertar
+     */
+    public void añadir(int numero) {
+        insertarOrdenado(numero);
     }
 
     /**
      * Añade un elemento a la lista dejandola ordenada
      * 
-     * @param num numero a añadir
+     * @param numero a añadir
      */
-    protected void insertar(int num)
+    protected void insertarOrdenado(int numero)
     {
 
-        int[] tmpEnteros = new int[enteros.length + 1];
+        int[] nuevoEnteros = new int[enteros.length + 1];
 
         // Comprobamos si es el primero
         if (enteros.length == 0) {
-            tmpEnteros[0] = num;
-            enteros = tmpEnteros;
+            nuevoEnteros[0] = numero;
+            enteros = nuevoEnteros;
             return;
         }
 
@@ -55,19 +60,19 @@ public class ArrayEnteros
 
         int n = 0;
         for (int x = 0; x < enteros.length; x++) {
-            if (num < enteros[x] && !insertado) {
-                tmpEnteros[n++] = num;
+            if (numero < enteros[x] && !insertado) {
+                nuevoEnteros[n++] = numero;
                 insertado = true;
             }
-            tmpEnteros[n++] = enteros[x];
+            nuevoEnteros[n++] = enteros[x];
         }
 
         // Si todavía no lo hemos insertado, es el último
         if(!insertado) {
-            tmpEnteros[n] = num;
+            nuevoEnteros[n] = numero;
         }
 
-        enteros = tmpEnteros;
+        enteros = nuevoEnteros;
     }
 
     /**
@@ -77,18 +82,29 @@ public class ArrayEnteros
      */
     public void borrar(int aBorrar)
     {
-        
         int pos = buscar(aBorrar);
         if(pos > -1) {
-            int[] tmpEnteros = new int[enteros.length-1];
+            int[] nuevoEnteros = new int[enteros.length-1];
             int n = 0;
             for(int x=0; x<enteros.length; x++) {
                 if(x != pos) {
-                    tmpEnteros[n++] = enteros[x];
+                    nuevoEnteros[n++] = enteros[x];
                 }
             }
 
-            enteros = tmpEnteros;
+            enteros = nuevoEnteros;
+        }
+    }
+
+    /**
+     * Borra todas las ocurrencias de un numero
+     *
+     * @param aBorrar numero a borrar
+     */
+
+    public void borrarTodos(int aBorrar) {
+        while(this.contiene(aBorrar)) {
+            this.borrar(aBorrar);
         }
     }
 
