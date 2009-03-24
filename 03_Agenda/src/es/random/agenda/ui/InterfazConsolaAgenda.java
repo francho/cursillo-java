@@ -97,7 +97,7 @@ public class InterfazConsolaAgenda
             // Añadir
             case 1:
                 titulo("Introduzca los datos del nuevo contacto");
-                gestor.AñadirContacto(obtenerDatos());
+                gestor.añadirContacto(obtenerDatos());
                 break;
             // Borrar
             case 2:

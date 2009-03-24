@@ -34,7 +34,7 @@ public class GestorAgenda {
      * Añade un contacto al vector
      * @param nuevoContacto datos del nuevo contacto a incluir
      */
-    public void AñadirContacto(Contacto nuevoContacto) {
+    public void añadirContacto(Contacto nuevoContacto) {
         // Necesitamos ampliar el tamaño de nuestro vector, así que creamos uno
         // del tamaño que necesitamos.
         Contacto[] nuevaLista = new Contacto[contactos.length + 1];
@@ -121,8 +121,7 @@ public class GestorAgenda {
             if(contactos[i].equals(aBuscar)) {
                 encontrado = i;
             }          
-        } while( (i++ < contactos.length) && ( encontrado == -1 ) );
-
+        } while( (i++ < contactos.length-1) && ( encontrado == -1 ) );
 
         return encontrado;
     }
