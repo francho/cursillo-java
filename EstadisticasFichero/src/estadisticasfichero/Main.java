@@ -30,9 +30,16 @@ public class Main {
     public static void main(String[] args) {
         FicheroTexto fich = new FicheroTexto("prueba.txt");
 
-        fich.cargar();
+        // fich.cargar();
         System.out.println(fich.getContenido());
 
+        fich.setContenido("primera\r\nesta linea\r\ncambiado");
+        fich.guardar();
+        
+        fich.guardarComo("nuevo.txt");
+        
+        
+        fich.estadisticas();
     }
 
 }
