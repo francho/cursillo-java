@@ -20,7 +20,7 @@ public class InterfazConsolaAgenda
     private boolean continuar = true;
     private GestorAgenda gestor;
 
-    private final int NUM_OPCIONES = 5 ;
+    private final int NUM_OPCIONES = 7 ;
     /**
      * Constructor de la clase
      *
@@ -49,16 +49,20 @@ public class InterfazConsolaAgenda
         System.out.println("");
         System.out.println("-----------------------------------------");
         System.out.println("\t         Menú         ");
-        System.out.println("\t-----------------------");
-        System.out.println("\t (0) Salir            ");
-        System.out.println("\t (1) Añadir contacto  ");
-        System.out.println("\t (2) Borrar contacto  ");
-        System.out.println("\t (3) Listar contactos ");
-        System.out.println("\t (4) Guardar agenda   ");
-        System.out.println("\t (5) Cargar agenda    ");
-        System.out.println("\t-----------------------");
+        System.out.println("\t--------------------------");
+        System.out.println("\t (0) Salir                ");
+        System.out.println("\t (1) Añadir contacto      ");
+        System.out.println("\t (2) Borrar contacto      ");
+        System.out.println("\t (3) Listar contactos     ");
+        System.out.println("\t (4) Guardar agenda       ");
+        System.out.println("\t (5) Cargar agenda        ");
+        System.out.println("\t (6) Guardar serializada  ");
+        System.out.println("\t (7) Cargar serializada   ");
+        System.out.println("\t--------------------------");
 
     }
+
+
 
     /**
      * Captura la opcion seleccionada por el usuario
@@ -117,6 +121,12 @@ public class InterfazConsolaAgenda
             case 5: // Cargar
                 opContactosCargar();
                 break;
+            case 6: // Guardar serializada
+                opContactosGuardarSerializada();
+                break;
+            case 7:
+                opContactosCargarSerializada();
+                break;
             default:
                 System.out.println("ERR: Opción incorrecta");
         }
@@ -160,6 +170,16 @@ public class InterfazConsolaAgenda
 
     private void opContactosCargar() {
         gestor.cargarTexto();
+    }
+
+    private void opContactosCargarSerializada()
+    {
+        gestor.deserializar();
+    }
+
+    private void opContactosGuardarSerializada()
+    {
+        gestor.serializar();
     }
 
     /**

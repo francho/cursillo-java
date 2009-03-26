@@ -210,13 +210,13 @@ public class GestorAgenda
 
             // Por cada contacto escribimos sus datos
             for (Contacto c : contactos) {
-                escritor.print(c.getNombre()+"\r\n");
-                escritor.print(c.getPrimerApellido()+"\r\n");
-                escritor.print(c.getSegundoApellido()+"\r\n");
-                escritor.print(c.getDireccion()+"\r\n");
-                escritor.print(c.getEmail()+"\r\n");
-                escritor.print(c.getTelefonoFijo()+"\r\n");
-                escritor.print(c.getTelefonoMovil()+"\r\n");
+                escritor.print(c.getNombre() + "\r\n");
+                escritor.print(c.getPrimerApellido() + "\r\n");
+                escritor.print(c.getSegundoApellido() + "\r\n");
+                escritor.print(c.getDireccion() + "\r\n");
+                escritor.print(c.getEmail() + "\r\n");
+                escritor.print(c.getTelefonoFijo() + "\r\n");
+                escritor.print(c.getTelefonoMovil() + "\r\n");
             }
         } catch (IOException ex) {
             Logger.getLogger(GestorAgenda.class.getName()).log(Level.SEVERE, null, ex);
@@ -238,14 +238,15 @@ public class GestorAgenda
      *
      * @param nombreFichero nombre del fichero de datos
      */
-    public void cargarTexto(String nombreFichero) {
+    public void cargarTexto(String nombreFichero)
+    {
         File fichero = new File(nombreFichero);
 
         // Creamos las variables que vamos a necesitar luego
         FileReader lectorFichero = null;
         Scanner lector = null;
 
-        if(fichero.exists()) {
+        if (fichero.exists()) {
             try {
                 // Creamos el manejador de lectura del archivo
                 lectorFichero = new FileReader(fichero);
@@ -256,7 +257,7 @@ public class GestorAgenda
 
                 // Nos aseguramos de que nuestra lista está vacía
                 contactos = new Contacto[0];
-                while(lector.hasNext()) {
+                while (lector.hasNext()) {
                     Contacto c = new Contacto();
                     c.setNombre(lector.nextLine());
                     c.setPrimerApellido(lector.nextLine());
@@ -273,6 +274,64 @@ public class GestorAgenda
                 lector.close();
             }
 
+        }
+    }
+
+    /**
+     * Maneja la agenda con datos serializados
+     */
+    public void serializar()
+    {
+        File fichero = new File("serializado.dat");
+        FileOutputStream escritorFichero = null;
+        ObjectOutputStream escritor = null;
+
+        try {
+            if (!fichero.exists()) {
+                fichero.createNewFile();
+            }
+
+            escritorFichero = new FileOutputStream(fichero);
+            escritor = new ObjectOutputStream(escritorFichero);
+
+            escritor.writeObject(contactos);
+        } catch (IOException ex) {
+            Logger.getLogger(GestorAgenda.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                escritor.close();
+            } catch (IOException ex) {
+                Logger.getLogger(GestorAgenda.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    /**
+     * Carga y deserializa los datos del archivo
+     */
+    public void deserializar()
+    {
+        File fichero = new File("serializado.dat");
+        FileInputStream lectorFichero = null;
+        ObjectInputStream lector = null;
+        if (fichero.exists()) {
+            try {
+                lectorFichero = new FileInputStream(fichero);
+                lector = new ObjectInputStream(lectorFichero);
+
+                contactos = (Contacto[]) lector.readObject();
+
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(GestorAgenda.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(GestorAgenda.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    lector.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(GestorAgenda.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 }

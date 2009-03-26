@@ -6,24 +6,28 @@
  */
 package es.random.agenda.datos;
 
+import java.io.Serializable;
+
 /**
  * Almacena los datos de un contacto.
  *
  * @author: $Author$
  * @version: $Rev$
  * @Fecha: $Date$
- * $id$
+ * $Id$
  */
-public class Contacto
+
+// Esta clase se va a poder serializar
+public class Contacto implements Serializable
 {
 
-    protected String nombre;
-    protected String primerApellido;
-    protected String segundoApellido;
-    protected long telefonoFijo;
-    protected long telefonoMovil;
-    protected String email;
-    protected String direccion;
+    public String nombre;
+    public String primerApellido;
+    public String segundoApellido;
+    public long telefonoFijo;
+    public long telefonoMovil;
+    public String email;
+    public String direccion;
 
     /**
      * Constructor "Por defecto" de la clase
