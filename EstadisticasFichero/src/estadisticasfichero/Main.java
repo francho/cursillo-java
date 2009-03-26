@@ -9,7 +9,6 @@
  *      + Nº de lineas
  *
  */
-
 package estadisticasfichero;
 
 import es.random.mifichero.FicheroTexto;
@@ -22,12 +21,14 @@ import es.random.mifichero.FicheroTexto;
  * @Fecha: $Date$
  * $Id$
  */
-public class Main {
+public class Main
+{
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         FicheroTexto fich = new FicheroTexto("prueba.txt");
 
         // fich.cargar();
@@ -35,11 +36,24 @@ public class Main {
 
         fich.setContenido("primera\r\nesta linea\r\ncambiado");
         fich.guardar();
-        
-        fich.guardarComo("nuevo.txt");
-        
-        
+
+        //fich.guardarComo("nuevo.txt");
+
+        InterfazUsuario ui = new InterfazUsuario();
+
+
+        fich.setContenido(ui.pideNuevoTexto());
+
+        String nombre = ui.pideNombreFicheroTxt();
+
+        if(!nombre.equals("")) {
+            fich.guardarComo(nombre);
+        } else {
+            fich.guardar();
+        }
+
         fich.estadisticas();
     }
+
 
 }

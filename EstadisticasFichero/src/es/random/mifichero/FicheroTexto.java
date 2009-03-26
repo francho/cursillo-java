@@ -59,7 +59,7 @@ public class FicheroTexto {
                 lector.useDelimiter("\r\n");
                 
                 while (lector.hasNext()) {
-                    setContenido(getContenido() + lector.nextLine() + "\r\n");
+                    this.contenido += lector.nextLine() + "\r\n";
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(FicheroTexto.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,6 +98,7 @@ public class FicheroTexto {
             escritor = new PrintWriter(escritorFichero);
 
             escritor.print(this.contenido);
+            escritor.flush();
         } catch (IOException ex) {
             Logger.getLogger(FicheroTexto.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

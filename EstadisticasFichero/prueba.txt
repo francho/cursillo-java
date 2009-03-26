@@ -1,4 +1,3 @@
-linea 1
-linea 2
-linea 3 con varias palabras
-eof
+primera
+esta linea
+cambiado
