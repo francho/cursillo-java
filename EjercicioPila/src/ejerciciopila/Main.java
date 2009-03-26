@@ -73,6 +73,8 @@ public class Main
 
         pila.apilar(666);
 
+        pila.setCapacidad(5);
+
         pila.mostrar();
     }
 }

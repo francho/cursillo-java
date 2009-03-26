@@ -56,6 +56,24 @@ public class Pila
     }
 
     /**
+     * Modifica la capacidad de la lista
+     * Ojo: descarta datos de la cima (si se hace la lista mas pequeña)
+     *
+     * @param nueva capacidad de la lista
+     */
+    public void cambiarCapacidad(int capacidad) {
+        this.capacidad = capacidad;
+
+        int[] nuevo = new int[this.capacidad];
+
+        for(int x=0; x<tamaño && x<capacidad ;x++) {
+            nuevo[x] = valores[x];
+        }
+        valores = nuevo;
+    }
+
+
+    /**
      * Introduce un nuevo valor en la cima de la pila
      * Incrementa en uno el tamaño actual de la pila
      *
@@ -64,13 +82,12 @@ public class Pila
      */
     boolean apilar(int nuevoValor)
     {
-        if(!estaLlena()) {
-            valores[tamaño++] = nuevoValor;
-            return true;
-        } else {
-            errLlena();
-            return false;
+        // Si la hemos llenado, la redimensionamos duplicando su tamaño
+        if(tamaño == capacidad) {
+            this.cambiarCapacidad(capacidad * 2);
         }
+        valores[tamaño++] = nuevoValor;
+        return true;
     }
 
     /**
@@ -81,13 +98,12 @@ public class Pila
      */
     int desapilar()
     {
-        int valor = 0;
         if(!estaVacia()) {
-            --tamaño;
-            valor = getValores()[getTamaño()];
-            valores[tamaño] = 0;
+            return valores[--tamaño];
+        } else {
+            this.errVacia();
+            return 0;
         }
-        return valor;
     }
 
     /**
@@ -98,8 +114,8 @@ public class Pila
 
     public int verCima() {
         int valor;
-        if(getTamaño() > 0) {
-            valor = getValores()[getTamaño()-1];
+        if(!this.estaVacia()) {
+            valor = valores[tamaño - 1];
         } else {
             this.errVacia();
             valor = 0;
@@ -111,7 +127,7 @@ public class Pila
      * Vacía la pila
      */
     public void vaciar() {
-        crear(getCapacidad());
+        crear(capacidad);
     }
 
     /**
@@ -120,7 +136,7 @@ public class Pila
      * return true si está llena, fase sino
      */
     public boolean estaLlena() {
-        return (getTamaño() >= getCapacidad());
+        return (tamaño >= capacidad);
     }
 
     /**
@@ -129,7 +145,7 @@ public class Pila
      * 
      */
     public boolean estaVacia() {
-        return (getTamaño() == 0);
+        return (tamaño == 0);
     }
 
     /**
@@ -163,12 +179,12 @@ public class Pila
     public String toString()
     {
         String pila = "";
-        for (int x=getCapacidad()-1; x>=0; x--) {
+        for (int x=capacidad-1; x>=0; x--) {
             pila += "["+x+"] ";
-            if(x>=getTamaño()) {
+            if(x >= tamaño) {
                 pila += "(libre)";
             } else {
-                pila += Integer.toString(getValores()[x]);
+                pila += Integer.toString(valores[x]);
             }
             pila += "\n";
         }
@@ -181,6 +197,10 @@ public class Pila
     public int getCapacidad()
     {
         return capacidad;
+    }
+
+    public void setCapacidad(int capacidad) {
+        this.cambiarCapacidad(capacidad);
     }
 
     /**
