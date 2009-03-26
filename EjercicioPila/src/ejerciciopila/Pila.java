@@ -1,5 +1,6 @@
 /*
- *
+ * Manejador sencillo para una lista LIFO de enteros
+ * 
  */
 package ejerciciopila;
 
@@ -12,11 +13,41 @@ package ejerciciopila;
  */
 public class Pila
 {
-    private int capacidad;
-    
+    /**
+     * Capacidad total de la pila
+     */
+    private int capacidad; 
+
+    /**
+     * Valores de la pila
+     */
     private int[] valores;
 
+    /**
+     * tamaño actual de la pila
+     */
     private int tamaño;
+
+    /**
+     * Constructor de la clase
+     */
+    public Pila() {
+        crear(10);
+    }
+
+    /**
+     * Constructor de la clase para los casos que queramos indicar el tamaño
+     * @param capacidad del vector
+     */
+    public Pila(int capacidad) {
+        crear(capacidad);
+    }
+
+    /**
+     * Constructor de la clase
+     *
+     * @param capacidad
+     */
 
     public void crear(int capacidad) {
         this.valores = new int[capacidad];
@@ -37,6 +68,7 @@ public class Pila
             valores[tamaño++] = nuevoValor;
             return true;
         } else {
+            errLlena();
             return false;
         }
     }
@@ -114,6 +146,13 @@ public class Pila
      */
     private void errVacia() {
         System.out.println("ERROR - Pila vacía");
+    }
+
+    /**
+     * Gestiona el error de pila llena
+     */
+    private void errLlena() {
+        System.out.println("ERROR - Pila llena");
     }
 
 

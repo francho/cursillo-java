@@ -29,9 +29,8 @@ public class Main
      */
     public static void main(String[] args)
     {
-        Pila pila = new Pila();
-
-        pila.crear(10);
+        Pila pila = new Pila(10);
+        pila.mostrar();
 
         if (pila.estaVacia()) {
             System.out.println("La pila está vacía");
@@ -58,7 +57,6 @@ public class Main
 
         pila.mostrar();
         System.out.println("Cima: " + pila.verCima());
-
 
         pila.apilar(564);
         pila.apilar(-978);
