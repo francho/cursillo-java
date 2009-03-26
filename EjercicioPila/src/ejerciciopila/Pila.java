@@ -1,8 +1,12 @@
 /*
  * Manejador sencillo para una lista LIFO de enteros
+ *
+ * Ampliacion ejercicio: implementar la serializacion
  * 
  */
 package ejerciciopila;
+
+import java.io.Serializable;
 
 /**
  *
@@ -11,7 +15,7 @@ package ejerciciopila;
  * @date: $Date$
  * $Id$
  */
-public class Pila
+public class Pila implements Serializable
 {
     /**
      * Capacidad total de la pila
@@ -218,4 +222,5 @@ public class Pila
     {
         return tamaño;
     }
+    
 }
