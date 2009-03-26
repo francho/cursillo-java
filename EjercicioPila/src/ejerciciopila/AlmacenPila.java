@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Guarda la pila serializada en un fichero y la recupera
  */
 
 package ejerciciopila;
@@ -17,14 +16,19 @@ import java.util.logging.Logger;
  * $Id$
  */
 public class AlmacenPila {
-    Pila pila;
-
+    private String nombreFichero;
+    
     public AlmacenPila() {
-        pila = new Pila();
+        nombreFichero = "serializado.dat"; 
     }
-
-    public void serializarPila() {
-        File fichero = new File("serializado.dat");
+    
+    
+    
+    /**
+     * Serializa la pila y la guarda en un fichero
+     */
+    public void serializarPila(Pila pila) {
+        File fichero = new File(getNombreFichero());
         FileOutputStream escritorFichero = null;
         ObjectOutputStream escritor = null;
 
@@ -48,7 +52,39 @@ public class AlmacenPila {
         }
     }
 
-    public void deserializaPila() {
-
+    /**
+     * Recupera la pila guardada en el fichero y vuelve a cargar el objeto pila
+     */
+    public Pila deserializaPila() {
+        File fichero = new File(getNombreFichero());
+        FileInputStream lectorFichero = null;
+        ObjectInputStream lector = null;
+        
+        // Inicializamos la pila para limpiar posibles valores anteriores
+        Pila pila = new Pila();
+        
+        if(fichero.exists()) {
+            try {
+                lectorFichero = new FileInputStream(fichero);
+                lector = new ObjectInputStream(lectorFichero);
+                pila = (Pila) lector.readObject();
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AlmacenPila.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(AlmacenPila.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        
+        return pila;
     }
+
+    public String getNombreFichero() {
+        return nombreFichero;
+    }
+
+    public void setNombreFichero(String nombreFichero) {
+        this.nombreFichero = nombreFichero;
+    }
+
 }

@@ -29,6 +29,27 @@ public class Main
      */
     public static void main(String[] args)
     {
+        // pruebaPila();
+        AlmacenPila almacen = new AlmacenPila();
+        
+        
+        Pila pila = new Pila(10);
+
+        pila.apilar(1);
+        pila.apilar(2);
+        pila.apilar(102);
+        pila.apilar(40);
+        
+        almacen.setNombreFichero("otro.dat");
+        
+        almacen.serializarPila(pila);
+        
+        pila = almacen.deserializaPila();
+        
+        pila.mostrar();
+    }
+    
+    public static void pruebaPila() {
         Pila pila = new Pila(10);
         pila.mostrar();
 
