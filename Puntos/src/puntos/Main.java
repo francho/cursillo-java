@@ -2,10 +2,7 @@
  * Examen.
  * Ejercicio 1: Puntos en el plano
  */
-
 package puntos;
-
-import es.random.puntos.Punto;
 
 /**
  *
@@ -14,12 +11,14 @@ import es.random.puntos.Punto;
  * @date: $Date$
  * $Id$
  */
-public class Main {
+public class Main
+{
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         PruebaPuntos p = new PruebaPuntos();
 
         p.apartado1();
@@ -31,7 +30,6 @@ public class Main {
         p.apartado7();
         p.apartado8();
 
-        }
-
-
+        p.pruebaTriangulo();
+    }
 }

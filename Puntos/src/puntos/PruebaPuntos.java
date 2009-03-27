@@ -4,6 +4,7 @@
 package puntos;
 
 import es.random.puntos.Punto;
+import es.random.puntos.Triangulo;
 
 /**
  *
@@ -16,6 +17,7 @@ public class PruebaPuntos
 {
 
     private Punto punto;
+
 
     PruebaPuntos()
     {
@@ -110,6 +112,26 @@ public class PruebaPuntos
         Punto cercano = punto.calcularMasCercano(puntos);
 
         p(punto.toString() + " el mas cercano de la lista es " + cercano.toString());
+    }
+
+    public void pruebaTriangulo() {
+        Punto p1 = new Punto(10,1);
+        Punto p2 = new Punto(22,2.2);
+        Punto p3 = new Punto(3,7.2);
+
+        Triangulo triangulo = new Triangulo(p1,p2,p3);
+
+        p("El triangulo: " + triangulo.toString());
+
+        p("Longitud lados: ");
+
+        double[] lados = triangulo.calcularLongitudLados();
+
+        for(double lado: lados) {
+            p(String.valueOf(lado));
+        }
+
+
     }
 
     /**
