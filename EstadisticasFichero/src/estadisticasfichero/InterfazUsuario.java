@@ -46,7 +46,7 @@ public class InterfazUsuario {
 
         nombre = flujo.nextLine();
 
-        if( !nombre.equals("") && !nombre.matches("txt$")) {
+        if( !nombre.equals("") && !nombre.matches(".*.txt$")) {
             nombre += ".txt";
         }
         return nombre;
