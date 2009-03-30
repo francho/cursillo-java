@@ -12,9 +12,7 @@
 
 package ejemplogestorcadenas;
 
-import es.random.gestorcadenas.GestorCadenas;
 import es.random.gestorcadenas.ui.InterfazGestorCadenas;
-import java.util.ArrayList;
 
 /**
  *
@@ -30,8 +28,6 @@ public class Main {
      */
     public static void main(String[] args) {
        InterfazGestorCadenas interfaz = new InterfazGestorCadenas();
-
-
     }
 
 }
