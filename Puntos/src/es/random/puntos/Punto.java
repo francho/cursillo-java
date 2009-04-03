@@ -104,6 +104,31 @@ public class Punto {
     }
 
     /**
+     * Compara el punto actual con otro.
+     *
+     * @param Punto con el que comparar
+     * @return true si los dos tienen las mismas coordenadas
+     */
+    @Override
+    public boolean equals(Object aComparar) {
+        if(! (aComparar instanceof Punto)) {
+            return false;
+        } else {
+            Punto p = (Punto) aComparar;
+            return (x == p.getX()) && (y == p.getY());
+        }
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 3;
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        return hash;
+    }
+
+    /**
      * Convertimos nuestros datos en cadena para que sean visibles
      *
      * @return cadena con la representacion del punto

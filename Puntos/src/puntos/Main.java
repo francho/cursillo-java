@@ -19,8 +19,11 @@ public class Main
      */
     public static void main(String[] args)
     {
-        PruebaPuntos p = new PruebaPuntos();
 
+        PruebaPoligono p = new PruebaPoligono();
+
+        /*
+        PruebaPuntos p = new PruebaPuntos();
         p.apartado1();
         p.apartado2();
         p.apartado3(args);
@@ -31,5 +34,6 @@ public class Main
         p.apartado8();
 
         p.pruebaTriangulo();
+         */
     }
 }
