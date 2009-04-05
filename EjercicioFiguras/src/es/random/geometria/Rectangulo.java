@@ -35,7 +35,7 @@ public class Rectangulo extends FiguraGeometrica {
     {
         for( int y = 0 ; y < altura ; y++ ) {
             for( int x = 0; x < base ; x++ ) {
-                System.out.print(" · ");
+                System.out.print(" ·");
             }
             System.out.print("\n");
         }
