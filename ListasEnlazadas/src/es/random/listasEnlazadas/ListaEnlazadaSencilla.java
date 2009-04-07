@@ -43,6 +43,7 @@ abstract public class ListaEnlazadaSencilla {
                 primerNodo = primerNodo.getSiguiente();
             } else {
                 Nodo anterior = buscarAnteriorA(valor);
+                // Para borrar simplemente enlazo con el siguiente del siguiente
                 anterior.setSiguiente(anterior.getSiguiente().getSiguiente());
             }
         }

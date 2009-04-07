@@ -15,6 +15,8 @@ import es.random.listasEnlazadas.ListaEnlazadaNoObjetos;
 import es.random.listasEnlazadas.ListaEnlazadaSencilla;
 import es.random.listasEnlazadas.ListaEnlazadaSencillaDesordenada;
 import es.random.listasEnlazadas.ListaEnlazadaSencillaOrdenada;
+import java.util.Date;
+import java.util.Random;
 
 /**
  *
@@ -73,14 +75,24 @@ public class Main {
         ListaEnlazadaSencillaOrdenada lista3 = new ListaEnlazadaSencillaOrdenada();
 
         lista3.setPermitirDuplicados(true);
-        lista3.añadir(400);
-        lista3.añadir(200);
-        lista3.añadir(500);
-        lista3.añadir(200);
-        lista3.añadir(300);
+        
+        int min = 100;
+        int max = 300;
+        for(int i = 0; i < 10 ; i++) {
+            int aleatorio = (int)(Math.random() * (max - min) ) + min;
+            lista3.añadir(aleatorio);
+        }
+
         System.out.println(lista3.toString());
 
-        lista3.borrar(300);
+        lista3.borrar(200);
+
+         if(lista3.buscar(250) == null) {
+            System.out.println("250 No encontrado");
+        } else {
+            System.out.println("250 Encontrado");
+        }
+
         System.out.println(lista3.toString());
 
 
