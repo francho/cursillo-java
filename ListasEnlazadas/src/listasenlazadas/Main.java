@@ -11,6 +11,11 @@
 
 package listasenlazadas;
 
+import es.random.listasEnlazadas.ListaEnlazadaNoObjetos;
+import es.random.listasEnlazadas.ListaEnlazadaSencilla;
+import es.random.listasEnlazadas.ListaEnlazadaSencillaDesordenada;
+import es.random.listasEnlazadas.ListaEnlazadaSencillaOrdenada;
+
 /**
  *
  * @author: $Author$
@@ -24,27 +29,62 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ListaEnlazada l = new ListaEnlazada(6);
+        // Ejemplo de uso de la clase Lista sencilla (el nodo está incluido en la clase Lista)
 
-        l.setPermitirRepeticiones(true);
+        ListaEnlazadaNoObjetos lista = new ListaEnlazadaNoObjetos(6);
 
-        l.añadirNodo(2);
-        l.añadirNodo(5);
-        l.añadirNodo(2);
-        l.añadirNodo(29);
-        l.añadirNodo(4);
+        lista.setPermitirRepeticiones(true);
+
+        lista.añadirNodo(1);
+        lista.añadirNodo(5);
+        lista.añadirNodo(2);
+        lista.añadirNodo(29);
+        lista.añadirNodo(4);
+        lista.añadirNodo(10);
+        lista.añadirNodo(100);
 
 
-        if(l.buscarValor(5) == null) {
+        if(lista.buscarValor(5) == null) {
             System.out.println("No encontrado");
         } else {
             System.out.println("Encontrado");
         }
         
-        System.out.println(l.toString());
+        System.out.println(lista.toString());
 
-        l.borrarNodo(2);
-        System.out.println(l.toString());
+        lista.borrarNodo(1);
+        lista.borrarNodo(10);
+        lista.borrarNodo(100);
+        System.out.println(lista.toString());
+
+
+        // Ejemplo de uso de lista desordenada
+        ListaEnlazadaSencillaDesordenada lista2 = new ListaEnlazadaSencillaDesordenada();
+        lista2.setPermitirDuplicados(false);
+        lista2.añadir(20);
+        lista2.añadir(10);
+        lista2.añadir(10);
+        lista2.añadir(30);
+        System.out.println(lista2.toString());
+        lista2.borrar(30);
+        System.out.println(lista2.toString());
+
+        // Ejemplo de lista ordenada
+        ListaEnlazadaSencillaOrdenada lista3 = new ListaEnlazadaSencillaOrdenada();
+
+        lista3.setPermitirDuplicados(true);
+        lista3.añadir(400);
+        lista3.añadir(200);
+        lista3.añadir(500);
+        lista3.añadir(200);
+        lista3.añadir(300);
+        System.out.println(lista3.toString());
+
+        lista3.borrar(300);
+        System.out.println(lista3.toString());
+
+
     }
 
 }
+

@@ -1,8 +1,10 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Primera aproximación al manejo de listas enlazadas.
+ * Esta clase no está optimizada ya que el nodo está incluido en ella.
+ *
+ * Está mejor la clase ListaEnlazadaSencilla y sus derivadas
  */
-package listasenlazadas;
+package es.random.listasEnlazadas;
 
 /**
  *
@@ -11,18 +13,18 @@ package listasenlazadas;
  * @date: $Date$
  * $Id$
  */
-public class ListaEnlazada
+public class ListaEnlazadaNoObjetos
 {
 
     /** Valor almacenado en el nodo */
     private int valor;
     /** Puntero al siguiente nodo de la lista */
-    private ListaEnlazada siguiente;
+    private ListaEnlazadaNoObjetos siguiente;
 
     /** True si queremos tener elementos repetidos en la lista, false sino */
     private boolean permitirRepeticiones = true;
 
-    public ListaEnlazada(int valor)
+    public ListaEnlazadaNoObjetos(int valor)
     {
         this.valor = valor;
         siguiente = null;
@@ -35,7 +37,7 @@ public class ListaEnlazada
      */
     public void añadirNodo(int nuevoValor)
     {
-        ListaEnlazada nuevoNodo = new ListaEnlazada(nuevoValor);
+        ListaEnlazadaNoObjetos nuevoNodo = new ListaEnlazadaNoObjetos(nuevoValor);
         añadirNodo(nuevoNodo);
     }
 
@@ -45,9 +47,9 @@ public class ListaEnlazada
      *
      * @param nuevoNodo Nodo a insertar
      */
-    public void añadirNodo(ListaEnlazada nuevoNodo)
+    public void añadirNodo(ListaEnlazadaNoObjetos nuevoNodo)
     {
-        ListaEnlazada puntero = this;
+        ListaEnlazadaNoObjetos puntero = this;
         boolean insertado = false;
 
         // Si es el primero tenemos que engañarle
@@ -86,9 +88,9 @@ public class ListaEnlazada
      * @param valor a buscar
      * @return nodo que contiene el valor, null sino encontraod
      */
-    public ListaEnlazada buscarValor(int valor)
+    public ListaEnlazadaNoObjetos buscarValor(int valor)
     {
-        ListaEnlazada puntero = this;
+        ListaEnlazadaNoObjetos puntero = this;
 
         while (puntero != null) {
             if (puntero.valor == valor) {
@@ -105,9 +107,9 @@ public class ListaEnlazada
      * @param valor a buscar
      * @return el nodo anterior
      */
-    public ListaEnlazada buscarAnteriorA(int valor)
+    public ListaEnlazadaNoObjetos buscarAnteriorA(int valor)
     {
-        ListaEnlazada puntero = this;
+        ListaEnlazadaNoObjetos puntero = this;
 
         while (puntero != null) {
             if ((puntero.siguiente != null) && (puntero.siguiente.valor == valor)) {
@@ -125,7 +127,7 @@ public class ListaEnlazada
      *
      * @param nodo a borrar
      */
-    public void borrarNodo(ListaEnlazada nodo)
+    public void borrarNodo(ListaEnlazadaNoObjetos nodo)
     {
         borrarNodo(nodo.valor);
     }
@@ -137,7 +139,7 @@ public class ListaEnlazada
     public void borrarNodo(int valor)
     {
         if (buscarValor(valor) != null) {
-            ListaEnlazada anterior = buscarAnteriorA(valor);
+            ListaEnlazadaNoObjetos anterior = buscarAnteriorA(valor);
             if (anterior == null) { // Si es el primero
                 // Como no puedo borrarlo directamente duplico el siguiente número
                 // en el actual y luego borro el siguiente
@@ -153,7 +155,7 @@ public class ListaEnlazada
     public String toString()
     {
         String s = "";
-        ListaEnlazada nodo = this;
+        ListaEnlazadaNoObjetos nodo = this;
 
         while (nodo != null) {
             s += nodo.valor + "\n";
