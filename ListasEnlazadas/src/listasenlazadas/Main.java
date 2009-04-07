@@ -20,16 +20,30 @@ package listasenlazadas;
  */
 public class Main {
 
-    /**
+    /** 
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Lista l = new Lista();
+        ListaEnlazada l = new ListaEnlazada(6);
 
-        l.añadirElemento(1);
-        l.añadirElemento(2);
-        l.añadirElemento(3);
+        l.setPermitirRepeticiones(true);
 
+        l.añadirNodo(2);
+        l.añadirNodo(5);
+        l.añadirNodo(2);
+        l.añadirNodo(29);
+        l.añadirNodo(4);
+
+
+        if(l.buscarValor(5) == null) {
+            System.out.println("No encontrado");
+        } else {
+            System.out.println("Encontrado");
+        }
+        
+        System.out.println(l.toString());
+
+        l.borrarNodo(2);
         System.out.println(l.toString());
     }
 
