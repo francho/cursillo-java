@@ -227,6 +227,10 @@ public class Gestor <C extends Serializable & TextoSerializable>
     }
 
     public String[] obtenerNombresCol() {
-       return  contactos.get(0).nombreCampos();     
+       if(contactos.isEmpty()) {
+            return new String[0];
+       } else {
+            return  contactos.get(0).nombreCampos();
+       }
     }
 }
