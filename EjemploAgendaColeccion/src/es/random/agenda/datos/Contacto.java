@@ -251,4 +251,31 @@ public class Contacto implements Serializable, TextoSerializable
     {
         return new Contacto();
     }
+
+    public String[] toArray()
+    {
+        String[] cad = new String[7];
+        cad[0] = nombre;
+       cad[1] = primerApellido;
+       cad[2] = segundoApellido;
+       cad[3] = "" + telefonoFijo;
+       cad[4] = "" + telefonoMovil;
+       cad[5] = eMail;
+       cad[6] = direccion;
+       return cad;
+    }
+
+    public String[] nombreCampos()
+    {
+       String[] cad = new String[7];
+       cad[0] = "nombre";
+       cad[1] = "primerApellido";
+       cad[2] = "segundoApellido";
+       cad[3] = "telefonoFijo";
+       cad[4] = "telefonoMovil";
+       cad[5] = "eMail";
+       cad[6] = "direccion";
+
+       return cad;
+    }
 }
