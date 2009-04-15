@@ -11,8 +11,9 @@
 
 package agenda;
 
-import es.random.agenda.datos.Contacto;
+import es.random.agenda.datos.*;
 import es.random.java.librerias.gestion.Gestor;
+import javax.swing.table.*;
 
 /**
  *
@@ -54,6 +55,7 @@ public class AgendaUI extends javax.swing.JFrame {
         jTextField7 = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
+        tablaDatos = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -104,7 +106,7 @@ public class AgendaUI extends javax.swing.JFrame {
                             .addComponent(jTextField3)
                             .addComponent(jTextField2)
                             .addComponent(textoNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
@@ -117,7 +119,7 @@ public class AgendaUI extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)))
+                        .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -153,7 +155,7 @@ public class AgendaUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Contactos", jPanel1);
@@ -162,16 +164,20 @@ public class AgendaUI extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 455, Short.MAX_VALUE)
+            .addGap(0, 458, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 146, Short.MAX_VALUE)
+            .addGap(0, 144, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("tab2", jPanel2);
 
         jSplitPane1.setLeftComponent(jTabbedPane1);
+
+        tablaDatos.setModel(setTableModelAgenda());
+        jScrollPane1.setViewportView(tablaDatos);
+
         jSplitPane1.setRightComponent(jScrollPane1);
 
         jMenu1.setText("File");
@@ -217,6 +223,13 @@ public class AgendaUI extends javax.swing.JFrame {
         });
     }
 
+    public AbstractTableModel setTableModelAgenda() {
+        AgendaTableModel tabla = new AgendaTableModel();
+        
+
+        return tabla;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -239,6 +252,7 @@ public class AgendaUI extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
+    private javax.swing.JTable tablaDatos;
     private javax.swing.JTextField textoNombre;
     // End of variables declaration//GEN-END:variables
     private Gestor<Contacto> gestor;
