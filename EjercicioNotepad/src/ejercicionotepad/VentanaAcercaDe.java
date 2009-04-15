@@ -20,15 +20,17 @@ import java.awt.event.ActionListener;
 class VentanaAcercaDe extends JDialog {
     public VentanaAcercaDe(JFrame padre) {
         super(padre, "Acerca de...", true);
-        add(
-            new JLabel(
-                  "<html><h1><i>Core Java</i></h1><hr>By Cay Horstmann and Gary Cornell</html>"),
-            BorderLayout.CENTER);
 
-      // Ok button closes the dialog
+        JLabel texto = new JLabel(
+                  "<html><center><h1>mi Primer Editor chispas</h1><br/><i> $Author$ $Id$ </i></center></html>"
+                  );
+        texto.setHorizontalAlignment(SwingConstants.CENTER);
 
-      JButton ok = new JButton("Ok");
-      ok.addActionListener(new ActionListener()
+        add(texto, BorderLayout.CENTER);
+
+      // Creamos el botón que cerrará la ventana
+      JButton botonCerrar = new JButton("Cerrar");
+      botonCerrar.addActionListener(new ActionListener()
          {
             public void actionPerformed(ActionEvent event)
             {
@@ -36,13 +38,19 @@ class VentanaAcercaDe extends JDialog {
             }
          });
 
-      // add Ok button to southern border
-
+      // El Boton irá al pie, lo metemos dentro de un Panel para que no ocupe el 100% del ancho
       JPanel panel = new JPanel();
-      panel.add(ok);
+      panel.add(botonCerrar);
       add(panel, BorderLayout.SOUTH);
 
-      setSize(250, 150);
+      // Añadimos el logo
+      JLabel logo = new JLabel();
+      logo.setIcon(new ImageIcon("media/logo.jpg"));
+      add(logo, BorderLayout.WEST);
+
+      // Dimensionamos la ventana
+      setSize(350, 250);
+
       // La ventana en el centro de la pantalla
       this.setLocationRelativeTo(null);
     }

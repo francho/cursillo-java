@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Iterator;
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -24,6 +23,10 @@ public class VentanaNotepad extends JFrame
 
     /** Zona de texto donde escribirá el usuario, es global porque debemos accederla desde varios sitios */
     JTextArea areaTexto;
+    /** Posicion donde nos hemos quedado en la búsqueda **/
+    int buscarDesde = 0;
+    /** Texto que se está buscando **/
+    String buscarTexto = "";
 
     /**
      * Constructor, inciliza el interfaz
@@ -72,21 +75,12 @@ public class VentanaNotepad extends JFrame
         JMenu menuArchivo = new JMenu("Archivo");
         menuArchivo.setMnemonic('a');
 
-        /*
-        nuevoItemMenu(menuArchivo, new OyenteFichero("Nuevo"), 'N', "ctrl N");
-        nuevoItemMenu(menuArchivo, new AccionFichero("Abrir"), 'A', "ctrl O");
-        nuevoItemMenu(menuArchivo, new AccionFichero("Guardar"), 'G', "ctrl S");
-         */
-        menuArchivo.add(crearElementoMenu("Nuevo", "ctrl N", 'n'));
-        menuArchivo.add(crearElementoMenu("Abrir", "ctrl O", 'b'));
-        menuArchivo.add(crearElementoMenu("Guardar", "ctrl S", 'G'));
+        menuArchivo.add(crearElementoMenu("Nuevo", "ctrl N", 'n', "Empieza un nuevo documento"));
+        menuArchivo.add(crearElementoMenu("Abrir", "ctrl O", 'b', "Abrir un documento existente"));
+        menuArchivo.add(crearElementoMenu("Guardar", "ctrl S", 'G', "Guardar el contenido actual"));
 
 
         menuArchivo.addSeparator();
-
-        // Otra forma de definir items, todo directamente
-
-        //nuevoItemMenu(menuArchivo, new AccionFichero("Salir"), 'S', "ctrl E");
 
         // Otra forma, definimos todo directamente
         JMenuItem itemSalir = new JMenuItem("Salir");
@@ -107,12 +101,13 @@ public class VentanaNotepad extends JFrame
         JMenu menuEdicion = new JMenu("Editar");
         menuEdicion.setMnemonic('E');
 
-        menuEdicion.add(new AccionEdicion("Copiar"));
-        menuEdicion.add(new AccionEdicion("Cortar"));
-        // Esto crea el item, pero no el acceso rápido
-        menuEdicion.add(new AccionEdicion("Pegar")).setAccelerator(KeyStroke.getKeyStroke("ctrl v"));
+        // Tambien podemos asignar mas propiedades en la misma linea
+        menuEdicion.add(new AccionEdicion("Copiar")).setIcon(new ImageIcon("media/copiar.png"));
+        menuEdicion.add(new AccionEdicion("Cortar")).setIcon(new ImageIcon("media/cortar.png"));
+        menuEdicion.add(new AccionEdicion("Pegar")).setIcon(new ImageIcon("media/pegar.png"));
         menuEdicion.addSeparator();
         menuEdicion.add(new AccionEdicion("Buscar"));
+        menuEdicion.add(new AccionEdicion("Buscar Siguiente"));
         menuEdicion.add(new AccionEdicion("Reemplazar"));
         menuEdicion.add(new AccionEdicion("Reemplazar Todo"));
 
@@ -146,10 +141,11 @@ public class VentanaNotepad extends JFrame
      * @param nombre texto del item
      * @param atajo combinacion de teclas atajo
      * @param mnemonico letra de acceso rápido
+     * @param ayuda el texto de ayuda que se mostrará en el tooltip
      *
      * @return item creado
      */
-    public JMenuItem crearElementoMenu(String nombre, String atajo, char mnemonico)
+    public JMenuItem crearElementoMenu(String nombre, String atajo, char mnemonico, String ayuda)
     {
         JMenuItem elementoMenu = new JMenuItem();
         elementoMenu.setName(nombre);
@@ -157,6 +153,9 @@ public class VentanaNotepad extends JFrame
         elementoMenu.setMnemonic(mnemonico);
         elementoMenu.setText(nombre);
         elementoMenu.addActionListener(new OyenteArchivo());
+        elementoMenu.setToolTipText(ayuda);
+        elementoMenu.setIcon(new ImageIcon("media/" + nombre.toLowerCase() + ".png"));
+
         return elementoMenu;
     }
 
@@ -183,10 +182,7 @@ public class VentanaNotepad extends JFrame
                 accionGuardar();
             }
         }
-
-        
-
-        }
+    }
 
     /**
      * Ejecuta la acción asociada a un evento del menu de edicion
@@ -211,89 +207,111 @@ public class VentanaNotepad extends JFrame
                 areaTexto.paste();
             } else if (opcion.equals("Buscar")) {
                 accionBuscar();
+            } else if (opcion.equals("Buscar Siguiente")) {
+                accionBuscarSiguiente();
             } else if (opcion.equals("Reemplazar")) {
-                String textoBuscar = "una";
-                String textoReemplazar = "***VARIAS***";
-                areaTexto.setText(areaTexto.getText().replaceFirst(textoBuscar, textoReemplazar));
+                accionReemplazar(false);
             } else if (opcion.equals("Reemplazar Todo")) {
-                String textoBuscar = "una";
-                String textoReemplazar = "***VARIAS***";
-                areaTexto.setText(areaTexto.getText().replaceAll(textoBuscar, textoReemplazar));
+                accionReemplazar(true);
             }
         }
     }
 
-
     private void accionNuevo()
-        {
-            areaTexto.setText("");
-        }
+    {
+        areaTexto.setText("");
+    }
 
-        private void accionAbrir()
-        {
+    private void accionAbrir()
+    {
+        GestorFicheroTexto fich = new GestorFicheroTexto();
+
+        JFileChooser fichSel = dialogoSeleccionarFichero();
+
+        int rtdoFich = fichSel.showOpenDialog(areaTexto);
+
+        if (rtdoFich == JFileChooser.APPROVE_OPTION) {
+            String nombreFichero = fichSel.getSelectedFile().getPath();
+
+            fich.cargarArchivo(nombreFichero);
+
+            // Cargamos el texto del fichero
+            String texto = "";
+            Iterator linea = fich.getCadenas().iterator();
+            while (linea.hasNext()) {
+                texto += linea.next() + "\r\n";
+            }
+
+            // Lo "dibujamos" en el editor
+            areaTexto.setText(texto);
+        }
+    }
+
+    private void accionGuardar()
+    {
+        JFileChooser fichSel = dialogoSeleccionarFichero();
+
+        int rtdoFich = fichSel.showSaveDialog(areaTexto);
+
+        if (rtdoFich == JFileChooser.APPROVE_OPTION) {
+            String nombreFichero = fichSel.getSelectedFile().getPath();
             GestorFicheroTexto fich = new GestorFicheroTexto();
-
-            JFileChooser fichSel = dialogoSeleccionarFichero();
-
-            int rtdoFich = fichSel.showOpenDialog(areaTexto);
-
-            if (rtdoFich == JFileChooser.APPROVE_OPTION) {
-                String nombreFichero = fichSel.getSelectedFile().getPath();
-
-                fich.cargarArchivo(nombreFichero);
-
-                // Cargamos el texto del fichero
-                String texto = "";
-                Iterator linea = fich.getCadenas().iterator();
-                while (linea.hasNext()) {
-                    texto += linea.next() + "\r\n";
-                }
-
-                // Lo "dibujamos" en el editor
-                areaTexto.setText(texto);
-            }
+            fich.setCadenas(areaTexto.getText());
+            fich.guardarArchivo(nombreFichero);
         }
+    }
 
-        private void accionGuardar()
-        {
-            JFileChooser fichSel = dialogoSeleccionarFichero();
-
-            int rtdoFich = fichSel.showSaveDialog(areaTexto);
-
-            if (rtdoFich == JFileChooser.APPROVE_OPTION) {
-                String nombreFichero = fichSel.getSelectedFile().getPath();
-                GestorFicheroTexto fich = new GestorFicheroTexto();
-                fich.setCadenas(areaTexto.getText());
-                fich.guardarArchivo(nombreFichero);
-            }
-        }
-
-        private JFileChooser dialogoSeleccionarFichero()
-        {
-            JFileChooser fichSel = new JFileChooser();
-            fichSel.setCurrentDirectory(new File("."));
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Ficheros de texto", "txt");
-            fichSel.setFileFilter(filter);
-            return fichSel;
-        }
-    
+    private JFileChooser dialogoSeleccionarFichero()
+    {
+        JFileChooser fichSel = new JFileChooser();
+        fichSel.setCurrentDirectory(new File("."));
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Ficheros de texto", "txt");
+        fichSel.setFileFilter(filter);
+        return fichSel;
+    }
 
     private void accionBuscar()
     {
-        String textoBuscar = JOptionPane.showInputDialog(
+        buscarTexto = JOptionPane.showInputDialog(
                 VentanaNotepad.this, "Texto a buscar", "Buscar...", JOptionPane.QUESTION_MESSAGE);
 
-        if (!textoBuscar.equals("")) {
-            int inicio = areaTexto.getText().indexOf(textoBuscar);
+        buscarDesde = 0;
+        accionBuscarSiguiente();
+    }
+
+    private void accionBuscarSiguiente()
+    {
+        if (!buscarTexto.equals("")) {
+            int inicio = areaTexto.getText().indexOf(buscarTexto, buscarDesde);
             if (inicio >= 0) {
-                int fin = inicio + textoBuscar.length();
+                int fin = inicio + buscarTexto.length();
                 areaTexto.select(inicio, fin);
+                buscarDesde = inicio + 1;
+            } else {
+                JOptionPane.showMessageDialog(VentanaNotepad.this, "No se ha encontado ninguna conincidencia");
             }
         }
     }
 
-    private void accionReemplazarTodo() {
-      String textoBuscar = JOptionPane.showInputDialog(
+    /**
+     * Reemplaza
+     * @param reemplazarTodo si true reemplaza todas las ocurrencias, si false solo reemplaza la primera
+     */
+    private void accionReemplazar(boolean reemplazarTodo)
+    {
+        String textoBuscar = JOptionPane.showInputDialog( 
                 VentanaNotepad.this, "Texto a buscar", "Buscar...", JOptionPane.QUESTION_MESSAGE);
+
+        if (textoBuscar != null) {
+            String textoReemplazar = JOptionPane.showInputDialog(
+                    VentanaNotepad.this, "reemplazar por", "reemplazar...", JOptionPane.QUESTION_MESSAGE);
+            if (textoReemplazar != null) {
+                if (reemplazarTodo) {
+                    areaTexto.setText(areaTexto.getText().replaceAll(textoBuscar, textoReemplazar));
+                } else {
+                    areaTexto.setText(areaTexto.getText().replaceFirst(textoBuscar, textoReemplazar));
+                }
+            }
+        }
     }
 }
