@@ -4,7 +4,7 @@
  */
 package es.random.agenda.datos;
 
-import es.random.java.librerias.gestion.TextoSerializable;
+import es.random.java.librerias.gestion.IFuenteDeDatos;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,7 @@ import java.util.Scanner;
  *
  * @author AdminLocal
  */
-public class Contacto implements Serializable, TextoSerializable
+public class Contacto implements Serializable, IFuenteDeDatos
 {
 
     public String nombre;
@@ -163,15 +163,11 @@ public class Contacto implements Serializable, TextoSerializable
     @Override
     public boolean equals(Object o)
     {
-        if (o.getClass().equals(this.getClass()))
-        {
+        if (o.getClass().equals(this.getClass())) {
             Contacto otro = (Contacto) o;
-            if (this.nombre.equals(otro.nombre))
-            {
-                if (this.primerApellido.equals(otro.primerApellido))
-                {
-                    if (this.segundoApellido.equals(otro.segundoApellido))
-                    {
+            if (this.nombre.equals(otro.nombre)) {
+                if (this.primerApellido.equals(otro.primerApellido)) {
+                    if (this.segundoApellido.equals(otro.segundoApellido)) {
                         return true;
                     }
                 }
@@ -195,20 +191,16 @@ public class Contacto implements Serializable, TextoSerializable
     {
         String cadena = "";
         cadena += "Nombre: " + nombre + " " + primerApellido + " " + segundoApellido + "\n\r";
-        if (telefonoFijo != 900555555)
-        {
+        if (telefonoFijo != 900555555) {
             cadena += "Telefono Fijo: " + telefonoFijo + "\n\r";
         }
-        if (telefonoMovil != 900555555)
-        {
+        if (telefonoMovil != 900555555) {
             cadena += "Telefono Movil: " + telefonoMovil + "\n\r";
         }
-        if (!direccion.equals(""))
-        {
+        if (!direccion.equals("")) {
             cadena += "Dirección: " + direccion + "\n\r";
         }
-        if (!eMail.equals("yo@yo.com") && !eMail.equals(""))
-        {
+        if (!eMail.equals("yo@yo.com") && !eMail.equals("")) {
             cadena += "E-Mail: " + eMail + "\n\r";
         }
         return cadena;
@@ -232,8 +224,7 @@ public class Contacto implements Serializable, TextoSerializable
         Scanner lector = new Scanner(s);
         lector.useDelimiter("\r\n");
         ArrayList<Contacto> contactos = new ArrayList<Contacto>();
-        while (lector.hasNext())
-        {
+        while (lector.hasNext()) {
             Contacto c = new Contacto();
             c.setNombre(lector.nextLine());
             c.setPrimerApellido(lector.nextLine());
@@ -252,30 +243,120 @@ public class Contacto implements Serializable, TextoSerializable
         return new Contacto();
     }
 
-    public String[] toArray()
+    public String[] aArray()
     {
         String[] cad = new String[7];
         cad[0] = nombre;
-       cad[1] = primerApellido;
-       cad[2] = segundoApellido;
-       cad[3] = "" + telefonoFijo;
-       cad[4] = "" + telefonoMovil;
-       cad[5] = eMail;
-       cad[6] = direccion;
-       return cad;
+        cad[1] = primerApellido;
+        cad[2] = segundoApellido;
+        cad[3] = "" + telefonoFijo;
+        cad[4] = "" + telefonoMovil;
+        cad[5] = eMail;
+        cad[6] = direccion;
+        return cad;
     }
 
-    public String[] nombreCampos()
+    public String[] obtenerNombresColumnas()
     {
-       String[] cad = new String[7];
-       cad[0] = "nombre";
-       cad[1] = "primerApellido";
-       cad[2] = "segundoApellido";
-       cad[3] = "telefonoFijo";
-       cad[4] = "telefonoMovil";
-       cad[5] = "eMail";
-       cad[6] = "direccion";
+        String[] cad = {"nombre", "primer apellido", "segundo apellido", "teléfono fijo", "teléfono móvil", "email", "direccion"};
 
-       return cad;
+        return cad;
+    }
+
+    public Object obtenerElemento(int posicion)
+    {
+        Object obj = null;
+        switch (posicion) {
+            case 0:
+                obj = nombre;
+                break;
+            case 1:
+                obj = primerApellido;
+                break;
+            case 2:
+                obj = segundoApellido;
+                break;
+            case 3:
+                obj = telefonoFijo;
+                break;
+            case 4:
+                obj = telefonoMovil;
+                break;
+            case 5:
+                obj = eMail;
+                break;
+            case 6:
+                obj = direccion;
+                break;
+        }
+        return obj;
+    }
+
+    public int tamaño()
+    {
+        return obtenerNombresColumnas().length;
+    }
+
+    public void establecerElemento(Object valor, int posicion)
+    {
+        switch (posicion) {
+            case 0:
+                if (valor == null) {
+                    nombre = "";
+                } else if (valor instanceof String) {
+                    nombre = (String) valor;
+                }
+                break;
+            case 1:
+                if (valor == null) {
+                    primerApellido = "";
+                } else if (valor instanceof String) {
+                    primerApellido = (String) valor;
+                }
+                break;
+            case 2:
+                if (valor == null) {
+                    segundoApellido = "";
+                } else if (valor instanceof String) {
+                    segundoApellido = (String) valor;
+                }
+                break;
+            case 3:
+                if (valor == null) {
+                    telefonoFijo = 0;
+                } else {
+                    try {
+                        telefonoFijo = Long.parseLong((String) valor);
+                    } catch (Exception e) {
+                        System.out.println("Fallo de conversion");
+                    }
+                }
+                break;
+            case 4:
+                if (valor == null) {
+                    telefonoMovil = 0;
+                } else {
+                    try {
+                        telefonoMovil = Long.parseLong((String) valor);
+                    } catch (Exception e) {
+                        System.out.println("Fallo de conversion");
+                    }
+                }
+                break;
+            case 5:
+                if (valor == null) {
+                    eMail = "";
+                } else if (valor instanceof String) {
+                    eMail = (String) valor;
+                }
+                break;
+            case 6:
+                if (valor == null) {
+                    direccion = "";
+                } else if (valor instanceof String) {
+                    direccion = (String) valor;
+                }
+                break;
+        }
     }
 }
