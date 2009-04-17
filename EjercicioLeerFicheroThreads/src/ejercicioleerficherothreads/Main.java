@@ -21,12 +21,14 @@ public class Main {
      */
     public static void main(String[] args) throws InterruptedException {
         LeerFicheroThread t = new LeerFicheroThread("datos.txt");
-        t.run();
+        t.start();
 
         do {
-            System.out.println("Proceso principal esperando...");
-            t.join(5000);
-        } while(t.getState() != State.TERMINATED);
+            System.out.println("\nCargando fichero...");
+            Thread.sleep(1000);
+        }  while (t.getState() != State.TERMINATED);
+
+        System.out.println("Programa terminado.");
     }
 
 }

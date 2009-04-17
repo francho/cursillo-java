@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -30,7 +31,7 @@ public class LeerFicheroThread extends Thread {
     
     @Override
      public void run() {
-                 File fichero = new File(nombreFichero);
+        File fichero = new File(nombreFichero);
 
         // Creamos las variables que vamos a necesitar luego
         FileReader lectorFichero = null;
@@ -45,23 +46,31 @@ public class LeerFicheroThread extends Thread {
                 lectorFichero = new FileReader(fichero);
                 lector = new Scanner(lectorFichero);
 
-                double bytesTotal = fichero.getTotalSpace();
+                double bytesTotal = fichero.length();
                 double bytesLeido = 0;
 
-                // El limitador de
+                DecimalFormat formateador= new DecimalFormat("##0.0");
+                String progreso= "";
+                String progresoAnt = null;
+
                 lector.useDelimiter("\r\n");
 
-                
                 while (lector.hasNext()) {
                     String linea = lector.nextLine();
-                    bytesLeido+= linea.getBytes().length;
+                    bytesLeido+= linea.length();
                     this.cadenas.add(linea);
-                    System.out.println(bytesLeido +" de " + bytesTotal);
+                    
+                    progreso = formateador.format(bytesLeido * 100 / bytesTotal);
+                    if( ! progreso.equals(progresoAnt) ) {
+                        System.out.print("\r" + progreso + "%");
+                        progresoAnt = progreso;
+                    } 
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
             } finally {
                 lector.close();
+                System.out.println("Fichero cargado");
             }
         } else {
             System.out.println("ERR - No se encuentra el fichero (" + fichero.getAbsoluteFile() + ")");
