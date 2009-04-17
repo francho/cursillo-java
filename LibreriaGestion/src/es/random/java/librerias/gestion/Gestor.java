@@ -16,58 +16,61 @@ import java.util.logging.Logger;
  *
  * @author AdminLocal
  */
-public class Gestor <C extends Serializable & TextoSerializable>
+public class Gestor<C extends Serializable & IFuenteDeDatos>
 {
 
-    ArrayList<C> contactos;
+    ArrayList<C> datos;
 
     public Gestor()
     {
-        contactos = new ArrayList<C>();
+        datos = new ArrayList<C>();
+    }
+
+    public C obtenerElemento(int rowIndex)
+    {
+        return datos.get(rowIndex);
     }
 
     public int tamaño()
     {
-        return contactos.size();
+        return datos.size();
     }
 
     public boolean estaVacio()
     {
-        return contactos.isEmpty();
+        return datos.isEmpty();
     }
 
     public void añadirContacto(C nuevoContacto)
     {
-        contactos.add(nuevoContacto);
+        datos.add(nuevoContacto);
     }
 
     public void borrarContacto(C aEliminar)
     {
-        contactos.remove(aEliminar);
+        datos.remove(aEliminar);
     }
 
     public void borrarContacto(int indice)
     {
-        contactos.remove(indice);
+        datos.remove(indice);
     }
-
 
     public boolean contieneContacto(C buscado)
     {
-        return contactos.contains(buscado);
+        return datos.contains(buscado);
     }
 
     public int posicionDe(C buscado)
     {
-        return contactos.indexOf(buscado);
+        return datos.indexOf(buscado);
     }
 
     @Override
     public String toString()
     {
         String cadena = "";
-        for (C c : contactos)
-        {
+        for (C c : datos) {
             cadena += "****************************************\n\r";
             cadena += c.toString();
             cadena += "****************************************\n\r";
@@ -82,7 +85,7 @@ public class Gestor <C extends Serializable & TextoSerializable>
 
     public void cargarTexto(Class c)
     {
-        cargarTexto("default.txt",c);
+        cargarTexto("default.txt", c);
     }
 
     public void guardarTexto(String nombreFichero)
@@ -90,23 +93,18 @@ public class Gestor <C extends Serializable & TextoSerializable>
         File fichero = new File(nombreFichero);
         FileWriter escritorFichero = null;
         PrintWriter escritor = null;
-        try
-        {
-            if (!fichero.exists())
-            {
+        try {
+            if (!fichero.exists()) {
                 fichero.createNewFile();
             }
             escritorFichero = new FileWriter(fichero);
             escritor = new PrintWriter(escritorFichero);
-            for (C c : contactos)
-            {
+            for (C c : datos) {
                 escritor.print(c.extraerTexto());
             }
-        } catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-        } finally
-        {
+        } finally {
             escritor.close();
         }
     }
@@ -116,40 +114,31 @@ public class Gestor <C extends Serializable & TextoSerializable>
         File fichero = new File(nombreFichero);
         FileReader lectorFichero = null;
         Scanner lector = null;
-        if (fichero.exists())
-        {
-            try
-            {
+        if (fichero.exists()) {
+            try {
                 lectorFichero = new FileReader(fichero);
                 lector = new Scanner(lectorFichero);
                 lector.useDelimiter("\r\n");
-                contactos = new ArrayList<C>();
+                datos = new ArrayList<C>();
                 C c = null;
-                try
-                {
+                try {
                     c = (C) clase.newInstance();
-                } catch (InstantiationException ex)
-                {
+                } catch (InstantiationException ex) {
                     Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex)
-                {
+                } catch (IllegalAccessException ex) {
                     Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 String cadena = "";
-                while (lector.hasNext())
-                {
+                while (lector.hasNext()) {
                     cadena += lector.next() + "\r\n";
                 }
-                contactos.clear();
-                contactos.addAll(c.insertarTexto(cadena));
-            } catch (FileNotFoundException ex)
-            {
+                datos.clear();
+                datos.addAll(c.insertarTexto(cadena));
+            } catch (FileNotFoundException ex) {
                 Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InputMismatchException ex)
-            {
+            } catch (InputMismatchException ex) {
                 System.out.println(ex.getMessage());
-            } finally
-            {
+            } finally {
                 lector.close();
             }
         }
@@ -160,26 +149,19 @@ public class Gestor <C extends Serializable & TextoSerializable>
         File fichero = new File("serializado.dat");
         FileInputStream lectorFichero = null;
         ObjectInputStream lector = null;
-        if (fichero.exists())
-        {
-            try
-            {
+        if (fichero.exists()) {
+            try {
                 lectorFichero = new FileInputStream(fichero);
                 lector = new ObjectInputStream(lectorFichero);
-                contactos = (ArrayList<C>) lector.readObject();
-            } catch (ClassNotFoundException ex)
-            {
+                datos = (ArrayList<C>) lector.readObject();
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-            } finally
-            {
-                try
-                {
+            } finally {
+                try {
                     lector.close();
-                } catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -191,46 +173,45 @@ public class Gestor <C extends Serializable & TextoSerializable>
         File fichero = new File("serializado.dat");
         FileOutputStream escritorFichero = null;
         ObjectOutputStream escritor = null;
-        try
-        {
-            if (!fichero.exists())
-            {
+        try {
+            if (!fichero.exists()) {
                 fichero.createNewFile();
             }
             escritorFichero = new FileOutputStream(fichero);
             escritor = new ObjectOutputStream(escritorFichero);
-            escritor.writeObject(contactos);
-        } catch (IOException ex)
-        {
+            escritor.writeObject(datos);
+        } catch (IOException ex) {
             Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-        } finally
-        {
-            try
-            {
+        } finally {
+            try {
                 escritor.close();
-            } catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
-    public String[][] obtenerMatriz() {
-        String [][] cad = new String[tamaño()][obtenerNombresCol().length];
+    public String[][] obtenerMatriz()
+    {
+        String[][] cad = new String[0][0];
 
-        int fila = 0;
-        for (C c : contactos) {
-            cad[fila++] = c.toArray();
+        if (tamaño() > 0) {
+            cad = new String[tamaño()][obtenerNombresColumnas().length];
+
+            int fila = 0;
+            for (C c : datos) {
+                cad[fila++] = c.aArray();
+            }
         }
-
         return cad;
     }
 
-    public String[] obtenerNombresCol() {
-       if(contactos.isEmpty()) {
+    public String[] obtenerNombresColumnas()
+    {
+        if (datos.isEmpty()) {
             return new String[0];
-       } else {
-            return  contactos.get(0).nombreCampos();
-       }
+        } else {
+            return datos.get(0).obtenerNombresColumnas();
+        }
     }
 }

@@ -10,14 +10,17 @@ import java.util.Collection;
  *
  * @author AdminLocal
  */
-public interface TextoSerializable <T>
+public interface IFuenteDeDatos <T>
 {
 
     public String extraerTexto();
 
     public Collection<T> insertarTexto(String s);
 
-    public String[] toArray();
-    public String[] nombreCampos();
-    
+    public String[] aArray();
+    public String[] obtenerNombresColumnas();
+    public int tamaño();
+    public Object obtenerElemento(int posicion);
+    public void establecerElemento(Object valor, int posicion);
+
 }
