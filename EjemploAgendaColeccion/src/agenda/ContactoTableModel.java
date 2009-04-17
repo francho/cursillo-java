@@ -23,7 +23,7 @@ public class ContactoTableModel extends DefaultTableModel {
 
     public ContactoTableModel() {
         miGestor = new Gestor<Contacto>();
-        miGestor.deserializar();
+        this.cargarAgenda();
     }
 
     @Override
@@ -41,9 +41,14 @@ public class ContactoTableModel extends DefaultTableModel {
     }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-       return miGestor.obtenerElemento(rowIndex).obtenerElemento(columnIndex).toString();
-        //return miGestor.obtenerMatriz()[rowIndex][columnIndex];
+    public Object getValueAt(int fila, int columna) {
+
+        if(fila >=0 && columna >=0) {
+            return miGestor.obtenerElemento(fila).obtenerElemento(columna).toString();
+            //return miGestor.obtenerMatriz()[fila][columna];
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -72,9 +77,24 @@ public class ContactoTableModel extends DefaultTableModel {
         miGestor.obtenerElemento(rowIndex).establecerElemento(aValue, columnIndex);
     }
 
-    void addRow()
+    void añadirFila()
     {
         miGestor.añadirContacto(new Contacto());
+        this.fireTableDataChanged();
+    }
+
+    void borrarFila(int indice) {
+        miGestor.borrarContacto(indice);
+        this.fireTableDataChanged();
+    }
+
+    void cargarAgenda() {
+        miGestor.deserializar();
+        this.fireTableDataChanged();
+    }
+
+    void guardarAgenda() {
+        miGestor.serializar();
     }
 
     /*
