@@ -22,10 +22,15 @@ public class TestVectorDinamicoRunnable implements Runnable {
 
     public void run()
     {
-        int num = (int) (Math.random() * 100);
-        vector.añadir(num);
-        vector.borrar((int)Math.random());
+        int num = (int) (Math.random() * 10);
+        int pos;
+        do {
+            pos = (int) (Math.random() * 10) - 1;
+        } while(pos < 0);
+
+        vector.añadirEn(""+num, pos);
+
+        //        vector.borrar((int)Math.random());
         System.out.println(Thread.currentThread() + ": " + vector.toString());
     }
-
 }
