@@ -33,17 +33,14 @@ import javax.swing.JFrame;
  * @date: $Date$
  * $Id$
  */
-
 /**
  * The application's main frame.
  */
-public class ServidorChatView extends FrameView
-{
+public class ServidorChatView extends FrameView {
 
     private ArrayList<Usuario> lista;
 
-    public ServidorChatView(SingleFrameApplication app)
-    {
+    public ServidorChatView(SingleFrameApplication app) {
         super(app);
 
         initComponents();
@@ -52,25 +49,20 @@ public class ServidorChatView extends FrameView
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
-        messageTimer = new Timer(messageTimeout, new ActionListener()
-        {
+        messageTimer = new Timer(messageTimeout, new ActionListener() {
 
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 statusMessageLabel.setText("");
             }
         });
         messageTimer.setRepeats(false);
         int busyAnimationRate = resourceMap.getInteger("StatusBar.busyAnimationRate");
-        for (int i = 0; i < busyIcons.length; i++)
-        {
+        for (int i = 0; i < busyIcons.length; i++) {
             busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
         }
-        busyIconTimer = new Timer(busyAnimationRate, new ActionListener()
-        {
+        busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
 
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
                 statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
             }
@@ -81,38 +73,28 @@ public class ServidorChatView extends FrameView
 
         // connecting action tasks to status bar via TaskMonitor
         TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
-        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener()
-        {
+        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
 
-            public void propertyChange(java.beans.PropertyChangeEvent evt)
-            {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 String propertyName = evt.getPropertyName();
-                if ("started".equals(propertyName))
-                {
-                    if (!busyIconTimer.isRunning())
-                    {
+                if ("started".equals(propertyName)) {
+                    if (!busyIconTimer.isRunning()) {
                         statusAnimationLabel.setIcon(busyIcons[0]);
                         busyIconIndex = 0;
                         busyIconTimer.start();
                     }
                     progressBar.setVisible(true);
                     progressBar.setIndeterminate(true);
-                }
-                else if ("done".equals(propertyName))
-                {
+                } else if ("done".equals(propertyName)) {
                     busyIconTimer.stop();
                     statusAnimationLabel.setIcon(idleIcon);
                     progressBar.setVisible(false);
                     progressBar.setValue(0);
-                }
-                else if ("message".equals(propertyName))
-                {
+                } else if ("message".equals(propertyName)) {
                     String text = (String) (evt.getNewValue());
                     statusMessageLabel.setText((text == null) ? "" : text);
                     messageTimer.restart();
-                }
-                else if ("progress".equals(propertyName))
-                {
+                } else if ("progress".equals(propertyName)) {
                     int value = (Integer) (evt.getNewValue());
                     progressBar.setVisible(true);
                     progressBar.setIndeterminate(false);
@@ -123,10 +105,8 @@ public class ServidorChatView extends FrameView
     }
 
     @Action
-    public void showAboutBox()
-    {
-        if (aboutBox == null)
-        {
+    public void showAboutBox() {
+        if (aboutBox == null) {
             JFrame mainFrame = ServidorChatApp.getApplication().getMainFrame();
             aboutBox = new ServidorChatAboutBox(mainFrame);
             aboutBox.setLocationRelativeTo(mainFrame);
@@ -261,18 +241,14 @@ public class ServidorChatView extends FrameView
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
-    private class Oyente implements Runnable
-    {
+    private class Oyente implements Runnable {
 
-        public void run()
-        {
-            try
-            {
+        public void run() {
+            try {
                 int i = 1;
                 ServerSocket s = new ServerSocket(4321);
 
-                while (true)
-                {
+                while (true) {
                     System.out.println("Me pongo a la escucha");
                     Socket incoming = s.accept();
                     System.out.println("Nueva conexion establecida");
@@ -283,18 +259,18 @@ public class ServidorChatView extends FrameView
                     Thread t = new Thread(nuevoUsuario);
                     t.start();
                     // Mandamos al usuario la lista de conectados actual
-                    for(Usuario u:lista) {
-                        Mensaje mConectado = new Mensaje(u.nombre,"ya esta conectado",Tipo.UsuarioEntra);
-                        nuevoUsuario.enviarMensaje(mConectado);
+                    for (Usuario u : lista) {
+                        if (!u.equals(nuevoUsuario)) {
+                            Mensaje mConectado = new Mensaje(u.nombre, "ya esta conectado", Tipo.UsuarioEntra);
+                            nuevoUsuario.enviarMensaje(mConectado);
+                        }
                     }
-                    
+
                     // Notificamos la conexion al resto
-                    publicar(new Mensaje(nuevoUsuario.nombre,"entra",Tipo.UsuarioEntra));
+                    publicar(new Mensaje(nuevoUsuario.nombre, "entra", Tipo.UsuarioEntra));
 
                 }
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -307,8 +283,7 @@ public class ServidorChatView extends FrameView
         t.start();
     }//GEN-LAST:event_iniciar
 
-    private void notificarDesconexion(Usuario user)
-    {
+    private void notificarDesconexion(Usuario user) {
         System.out.println("Borro al usuario de la lista");
         lista.remove(user);
 
@@ -324,10 +299,8 @@ public class ServidorChatView extends FrameView
 
     }
 
-    private void publicar(Mensaje m)
-    {
-        for (Usuario u : lista)
-        {
+    private void publicar(Mensaje m) {
+        for (Usuario u : lista) {
             System.out.println("Mandando mensaje " + m.getTipo() + " a: " + u.nombre);
             u.enviarMensaje(m);
         }
@@ -352,114 +325,80 @@ public class ServidorChatView extends FrameView
     private int busyIconIndex = 0;
     private JDialog aboutBox;
 
-    public class Usuario implements Runnable
-    {
+    public class Usuario implements Runnable {
 
         private String nombre;
         private Socket puerto;
         private ObjectOutputStream escritor;
         private ObjectInputStream lector;
 
-        public Usuario(String nombre, Socket puerto)
-        {
+        public Usuario(String nombre, Socket puerto) {
             this.nombre = nombre;
             this.puerto = puerto;
             inicializarFlujos();
         }
 
-        private void inicializarFlujos()
-        {
-            try
-            {
-                if(puerto!= null)
-                {
+        private void inicializarFlujos() {
+            try {
+                if (puerto != null) {
                     System.out.println("El socket no es nulo");
-                    if(puerto.isBound())
-                    {
+                    if (puerto.isBound()) {
                         System.out.println("El socket esta asignado a un puerto");
                     }
-                    if(puerto.isClosed())
-                    {
+                    if (puerto.isClosed()) {
                         System.out.println("El socket esta cerrado");
-                    }
-                    else
-                    {
+                    } else {
                         System.out.println("El socket no esta cerrado");
                     }
-                    if(puerto.isConnected())
-                    {
+                    if (puerto.isConnected()) {
                         System.out.println("El socket esta conectado");
                     }
-                    if(puerto.isInputShutdown())
-                    {
+                    if (puerto.isInputShutdown()) {
                         System.out.println("El puerto no tiene conexion de entrada");
                     }
-                    if(puerto.isOutputShutdown())
-                    {
+                    if (puerto.isOutputShutdown()) {
                         System.out.println("El puerto no tiene conexion de salida");
                     }
                 }
                 escritor = new ObjectOutputStream(puerto.getOutputStream());
                 lector = new ObjectInputStream(puerto.getInputStream());
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        public void enviarMensaje(Mensaje nuevoMensaje)
-        {
-            try
-            {
+        public void enviarMensaje(Mensaje nuevoMensaje) {
+            try {
                 escritor.writeObject(nuevoMensaje);
                 escritor.flush();
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        public void run()
-        {
+        public void run() {
             Mensaje nuevoMensaje = new Mensaje();
-            do
-            {
-                try
-                {
+            do {
+                try {
                     nuevoMensaje = (Mensaje) lector.readObject();
-                }
-                catch(SocketException ex)
-                {
+                } catch (SocketException ex) {
                     nuevoMensaje.setTipo(Tipo.Salir);
-                }
-                catch (IOException ex)
-                {
+                } catch (IOException ex) {
+                    Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                catch (ClassNotFoundException ex)
-                {
-                    Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                if (nuevoMensaje.getTipo() != Tipo.Salir)
-                {
+                if (nuevoMensaje.getTipo() != Tipo.Salir) {
                     publicar(nuevoMensaje);
-                }
-                else
-                {
+                } else {
                     enviarMensaje(nuevoMensaje);
                 }
-            }
-            while (nuevoMensaje.getTipo() != Tipo.Salir);
-            try
-            {
+            } while (nuevoMensaje.getTipo() != Tipo.Salir);
+            try {
                 escritor.close();
                 lector.close();
-                    notificarDesconexion(this);
-            }
-            catch (IOException ex)
-            {
+                notificarDesconexion(this);
+            } catch (IOException ex) {
                 Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
