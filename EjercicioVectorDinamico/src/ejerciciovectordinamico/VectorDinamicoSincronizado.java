@@ -4,9 +4,6 @@
  */
 package ejerciciovectordinamico;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author: $Author$
@@ -58,7 +55,7 @@ public class VectorDinamicoSincronizado {
 
         } catch (InterruptedException ex) {
             // Logger.getLogger(VectorDinamicoSincronizado.class.getName()).log(Level.SEVERE, null, ex);
-            loguea("no puedo insertar " + texto + " en posicion " + posicion + " abandono");
+            loguea("HILO TERMINADO: no puedo insertar " + texto + " en posicion " + posicion + " abandono");
         }
 
         notifyAll();
