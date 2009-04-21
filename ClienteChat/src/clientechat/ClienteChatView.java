@@ -35,8 +35,7 @@ import javax.swing.tree.TreePath;
 /**
  * The application's main frame.
  */
-public class ClienteChatView extends FrameView
-{
+public class ClienteChatView extends FrameView {
 
     private String usuario = System.getProperty("user.name");
     private boolean conectado = false;
@@ -44,33 +43,27 @@ public class ClienteChatView extends FrameView
     private ObjectOutputStream escritor;
     private Socket puerto;
 
-    public ClienteChatView(SingleFrameApplication app)
-    {
+    public ClienteChatView(SingleFrameApplication app) {
         super(app);
 
         initComponents();
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
-        messageTimer = new Timer(messageTimeout, new ActionListener()
-        {
+        messageTimer = new Timer(messageTimeout, new ActionListener() {
 
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 statusMessageLabel.setText("");
             }
         });
         messageTimer.setRepeats(false);
         int busyAnimationRate = resourceMap.getInteger("StatusBar.busyAnimationRate");
-        for (int i = 0; i < busyIcons.length; i++)
-        {
+        for (int i = 0; i < busyIcons.length; i++) {
             busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
         }
-        busyIconTimer = new Timer(busyAnimationRate, new ActionListener()
-        {
+        busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
 
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
                 statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
             }
@@ -81,35 +74,28 @@ public class ClienteChatView extends FrameView
 
         // connecting action tasks to status bar via TaskMonitor
         TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
-        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener()
-        {
+        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
 
-            public void propertyChange(java.beans.PropertyChangeEvent evt)
-            {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 String propertyName = evt.getPropertyName();
-                if ("started".equals(propertyName))
-                {
-                    if (!busyIconTimer.isRunning())
-                    {
+                if ("started".equals(propertyName)) {
+                    if (!busyIconTimer.isRunning()) {
                         statusAnimationLabel.setIcon(busyIcons[0]);
                         busyIconIndex = 0;
                         busyIconTimer.start();
                     }
                     progressBar.setVisible(true);
                     progressBar.setIndeterminate(true);
-                } else if ("done".equals(propertyName))
-                {
+                } else if ("done".equals(propertyName)) {
                     busyIconTimer.stop();
                     statusAnimationLabel.setIcon(idleIcon);
                     progressBar.setVisible(false);
                     progressBar.setValue(0);
-                } else if ("message".equals(propertyName))
-                {
+                } else if ("message".equals(propertyName)) {
                     String text = (String) (evt.getNewValue());
                     statusMessageLabel.setText((text == null) ? "" : text);
                     messageTimer.restart();
-                } else if ("progress".equals(propertyName))
-                {
+                } else if ("progress".equals(propertyName)) {
                     int value = (Integer) (evt.getNewValue());
                     progressBar.setVisible(true);
                     progressBar.setIndeterminate(false);
@@ -121,10 +107,8 @@ public class ClienteChatView extends FrameView
     }
 
     @Action
-    public void showAboutBox()
-    {
-        if (aboutBox == null)
-        {
+    public void showAboutBox() {
+        if (aboutBox == null) {
             JFrame mainFrame = ClienteChatApp.getApplication().getMainFrame();
             aboutBox = new ClienteChatAboutBox(mainFrame);
             aboutBox.setLocationRelativeTo(mainFrame);
@@ -317,32 +301,26 @@ public class ClienteChatView extends FrameView
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt)//GEN-FIRST:event_jTextField1KeyReleased
     {//GEN-HEADEREND:event_jTextField1KeyReleased
-        if (conectado)
-        {
-            if (evt.getKeyCode() == KeyEvent.VK_ENTER)
-            {
+        if (conectado) {
+            if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
                 Mensaje nuevoMensaje = new Mensaje(usuario, this.jTextField1.getText(), Tipo.Mensaje);
-                try
-                {
+                try {
                     escritor.writeObject(nuevoMensaje);
                     escritor.flush();
                     jTextField1.setText("");
                     jTextField1.requestFocus();
-                } catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     Logger.getLogger(ClienteChatView.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        } else
-        {
+        } else {
             areaTextoMensajes.append("No está conectado al servidor...\r\n");
         }
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void elementoMenuConectarMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_elementoMenuConectarMouseReleased
     {//GEN-HEADEREND:event_elementoMenuConectarMouseReleased
-        try
-        {
+        try {
             puerto = new Socket("localhost", 4321);
             lector = new ObjectInputStream(puerto.getInputStream());
             escritor = new ObjectOutputStream(puerto.getOutputStream());
@@ -351,8 +329,7 @@ public class ClienteChatView extends FrameView
             escritor.writeObject(new Mensaje(usuario, "", Tipo.Acceder));
             escritor.flush();
             conectado = true;
-        } catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(ClienteChatView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_elementoMenuConectarMouseReleased
@@ -361,82 +338,98 @@ public class ClienteChatView extends FrameView
     {//GEN-HEADEREND:event_elementoMenuDesconectarMouseReleased
         try {
             escritor.writeObject(new Mensaje(usuario, "", Tipo.Salir));
+
+            EventQueue.invokeLater(new Runnable() {
+
+                public void run() {
+                    DefaultMutableTreeNode top = (DefaultMutableTreeNode) arbolUsuarios.getModel().getRoot();
+                    top.removeAllChildren();
+
+                    DefaultTreeModel modelo = ((DefaultTreeModel) arbolUsuarios.getModel());
+                    modelo.nodeStructureChanged(top);
+                    arbolUsuarios.validate();
+
+                    mensajeRecibido("","Desconectado del servidor", Tipo.Salir);
+
+                }
+            });
         } catch (IOException ex) {
             Logger.getLogger(ClienteChatView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_elementoMenuDesconectarMouseReleased
 
-    class Oyente extends Thread
-    {
+    public void mensajeRecibido(String nombre, String mensaje, Tipo tipo) {
+        mensajeRecibido( new Mensaje(nombre,mensaje,tipo) );
+    }
+
+    public void mensajeRecibido(Mensaje mensaje) {
+
+        final String nombre = mensaje.getUsuario();
+        final String contenido = mensaje.getContenido();
+        final Tipo tipo = mensaje.getTipo();
+
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                areaTextoMensajes.append("<html><b>" + nombre + ":</b> " + contenido + "\r\n");
+                if (tipo == Tipo.UsuarioEntra) {
+                    DefaultMutableTreeNode top = (DefaultMutableTreeNode) arbolUsuarios.getModel().getRoot();
+                    DefaultMutableTreeNode nodo = new DefaultMutableTreeNode(nombre);
+                    nodo.setAllowsChildren(false);
+                    top.add(nodo);
+
+
+                    // Indicamos que ha habido cambios en el arbol para que se entere
+                    ((DefaultTreeModel) arbolUsuarios.getModel()).nodeStructureChanged(top);
+
+                    // Abrimos el arbol para que se vea bien que ha entrado un usuario
+                    TreePath tp = new TreePath(top.getPath());
+                    arbolUsuarios.expandPath(tp);
+
+                    arbolUsuarios.validate();
+                } else if (tipo == Tipo.UsuarioSale) {
+                    DefaultMutableTreeNode top = (DefaultMutableTreeNode) arbolUsuarios.getModel().getRoot();
+                    TreePath path = arbolUsuarios.getNextMatch(nombre, 0, Position.Bias.Forward);
+                    MutableTreeNode node = (MutableTreeNode) path.getLastPathComponent();
+                    // arbolUsuarios
+                    DefaultTreeModel modelo = ((DefaultTreeModel) arbolUsuarios.getModel());
+                    modelo.removeNodeFromParent(node);
+                    modelo.nodeStructureChanged(top);
+                    arbolUsuarios.validate();
+
+//                                    arbolUsuarios.remove(menuBar);
+                }
+
+            }
+        });
+    }
+
+    class Oyente extends Thread {
 
         ObjectInputStream lector;
 
-        public Oyente(ObjectInputStream lector)
-        {
+        public Oyente(ObjectInputStream lector) {
             this.lector = lector;
         }
 
-        public void run()
-        {
+        public void run() {
             Mensaje m = null;
-            do
-            {
-                try
-                {
+            do {
+                try {
                     m = (Mensaje) lector.readObject();
-                } catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     Logger.getLogger(ClienteChatView.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex)
-                {
+                } catch (ClassNotFoundException ex) {
                     Logger.getLogger(ClienteChatView.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (m != null)
-                {
-                    if (m.getTipo() != Tipo.Salir)
-                    {
-                        final String nombre = m.getUsuario();
-                        final String contenido = m.getContenido();
-                        final Tipo tipo = m.getTipo();
-                        EventQueue.invokeLater(new Runnable()
-                        {
+                if (m != null) {
+                    mensajeRecibido(m);
 
-                            public void run()
-                            {
-                                areaTextoMensajes.append(nombre + ": " + contenido + "\r\n");
 
-                                if(tipo == Tipo.UsuarioEntra) {
-                                    DefaultMutableTreeNode top = (DefaultMutableTreeNode)arbolUsuarios.getModel().getRoot();
-                                    DefaultMutableTreeNode nodo = new DefaultMutableTreeNode(nombre);
-                                    nodo.setAllowsChildren(false);
-                                    top.add(nodo);
-
-                                    // Indicamos que ha habido cambios en el arbol para que se entere
-                                    ((DefaultTreeModel)arbolUsuarios.getModel()).nodeStructureChanged(top);
-
-                                    // Abrimos el arbol para que se vea bien que ha entrado un usuario
-                                    TreePath tp = new TreePath(top.getPath());
-                                    arbolUsuarios.expandPath(tp);
-
-                                    arbolUsuarios.validate();
-                                } else if (tipo == Tipo.UsuarioSale) {
-                                    DefaultMutableTreeNode top = (DefaultMutableTreeNode)arbolUsuarios.getModel().getRoot();
-                                    TreePath path = arbolUsuarios.getNextMatch(nombre, MIN_PRIORITY, Position.Bias.Forward);
-                                    MutableTreeNode node = (MutableTreeNode)path.getLastPathComponent();
-                                    // arbolUsuarios
-                                    // removeNodeFromParent(node);
-
-                                    arbolUsuarios.remove(menuBar);
-                                }
-                            }
-                        });
-
-                    }
                 }
             } while (m.getTipo() != Tipo.Salir);
         }
-
-}
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTree arbolUsuarios;
@@ -456,20 +449,10 @@ public class ClienteChatView extends FrameView
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     // End of variables declaration//GEN-END:variables
-
     private final Timer messageTimer;
-
-private final Timer busyIconTimer;
-
-private final Icon idleIcon;
-
-private final Icon[]
-
-busyIcons = new Icon[15];
-    private int
-
-busyIconIndex = 0;
-
+    private final Timer busyIconTimer;
+    private final Icon idleIcon;
+    private final Icon[] busyIcons = new Icon[15];
+    private int busyIconIndex = 0;
     private JDialog aboutBox;
-
 }
