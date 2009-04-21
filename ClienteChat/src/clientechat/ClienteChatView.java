@@ -5,6 +5,7 @@ package clientechat;
 
 import es.random.java.chat.Mensaje;
 import es.random.java.chat.Mensaje.Tipo;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -25,6 +26,11 @@ import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.text.Position;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  * The application's main frame.
@@ -197,6 +203,8 @@ public class ClienteChatView extends FrameView
 
         panelUsuarios.setName("panelUsuarios"); // NOI18N
 
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Usuarios conectados");
+        arbolUsuarios.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         arbolUsuarios.setName("arbolUsuarios"); // NOI18N
         panelUsuarios.setViewportView(arbolUsuarios);
 
@@ -246,6 +254,11 @@ public class ClienteChatView extends FrameView
 
         elementoMenuDesconectar.setText(resourceMap.getString("elementoMenuDesconectar.text")); // NOI18N
         elementoMenuDesconectar.setName("elementoMenuDesconectar"); // NOI18N
+        elementoMenuDesconectar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                elementoMenuDesconectarMouseReleased(evt);
+            }
+        });
         menuArchivo.add(elementoMenuDesconectar);
 
         menuBar.add(menuArchivo);
@@ -344,6 +357,15 @@ public class ClienteChatView extends FrameView
         }
     }//GEN-LAST:event_elementoMenuConectarMouseReleased
 
+    private void elementoMenuDesconectarMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_elementoMenuDesconectarMouseReleased
+    {//GEN-HEADEREND:event_elementoMenuDesconectarMouseReleased
+        try {
+            escritor.writeObject(new Mensaje(usuario, "", Tipo.Salir));
+        } catch (IOException ex) {
+            Logger.getLogger(ClienteChatView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_elementoMenuDesconectarMouseReleased
+
     class Oyente extends Thread
     {
 
@@ -375,12 +397,37 @@ public class ClienteChatView extends FrameView
                     {
                         final String nombre = m.getUsuario();
                         final String contenido = m.getContenido();
+                        final Tipo tipo = m.getTipo();
                         EventQueue.invokeLater(new Runnable()
                         {
 
                             public void run()
                             {
                                 areaTextoMensajes.append(nombre + ": " + contenido + "\r\n");
+
+                                if(tipo == Tipo.UsuarioEntra) {
+                                    DefaultMutableTreeNode top = (DefaultMutableTreeNode)arbolUsuarios.getModel().getRoot();
+                                    DefaultMutableTreeNode nodo = new DefaultMutableTreeNode(nombre);
+                                    nodo.setAllowsChildren(false);
+                                    top.add(nodo);
+
+                                    // Indicamos que ha habido cambios en el arbol para que se entere
+                                    ((DefaultTreeModel)arbolUsuarios.getModel()).nodeStructureChanged(top);
+
+                                    // Abrimos el arbol para que se vea bien que ha entrado un usuario
+                                    TreePath tp = new TreePath(top.getPath());
+                                    arbolUsuarios.expandPath(tp);
+
+                                    arbolUsuarios.validate();
+                                } else if (tipo == Tipo.UsuarioSale) {
+                                    DefaultMutableTreeNode top = (DefaultMutableTreeNode)arbolUsuarios.getModel().getRoot();
+                                    TreePath path = arbolUsuarios.getNextMatch(nombre, MIN_PRIORITY, Position.Bias.Forward);
+                                    MutableTreeNode node = (MutableTreeNode)path.getLastPathComponent();
+                                    // arbolUsuarios
+                                    // removeNodeFromParent(node);
+
+                                    arbolUsuarios.remove(menuBar);
+                                }
                             }
                         });
 

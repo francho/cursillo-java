@@ -104,6 +104,9 @@
                   <SubComponents>
                     <Component class="javax.swing.JTree" name="arbolUsuarios">
                       <Properties>
+                        <Property name="model" type="javax.swing.tree.TreeModel" editor="org.netbeans.modules.form.editors2.TreeModelEditor">
+                          <TreeModel code="Usuarios conectados"/>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="arbolUsuarios" noResource="true"/>
                       </Properties>
                     </Component>
@@ -185,6 +188,9 @@
                 <Property name="text" type="java.lang.String" resourceKey="elementoMenuDesconectar.text"/>
                 <Property name="name" type="java.lang.String" value="elementoMenuDesconectar" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="elementoMenuDesconectarMouseReleased"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
