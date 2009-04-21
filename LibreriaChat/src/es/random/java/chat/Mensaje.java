@@ -67,7 +67,7 @@ public class Mensaje implements Serializable
 
     public enum Tipo implements Serializable
     {
-        Mensaje,Acceder,Salir
+        Mensaje,Acceder,Salir,UsuarioEntra,UsuarioSale
     }
 
     public Mensaje()
