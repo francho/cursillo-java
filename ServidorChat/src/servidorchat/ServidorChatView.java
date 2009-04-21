@@ -27,6 +27,14 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 /**
+ *
+ * @author: $Author$
+ * @version: $Rev$
+ * @date: $Date$
+ * $Id$
+ */
+
+/**
  * The application's main frame.
  */
 public class ServidorChatView extends FrameView
@@ -269,11 +277,20 @@ public class ServidorChatView extends FrameView
                     Socket incoming = s.accept();
                     System.out.println("Nueva conexion establecida");
                     System.out.println("Spawning " + i);
-                    Usuario r = new Usuario(incoming.getRemoteSocketAddress().toString(), incoming);
-                    lista.add(r);
-                    Thread t = new Thread(r);
-                    t.start();
                     i++;
+                    Usuario nuevoUsuario = new Usuario(incoming.getRemoteSocketAddress().toString(), incoming);
+                    lista.add(nuevoUsuario);
+                    Thread t = new Thread(nuevoUsuario);
+                    t.start();
+                    // Mandamos al usuario la lista de conectados actual
+                    for(Usuario u:lista) {
+                        Mensaje mConectado = new Mensaje(u.nombre,"ya esta conectado",Tipo.UsuarioEntra);
+                        nuevoUsuario.enviarMensaje(mConectado);
+                    }
+                    
+                    // Notificamos la conexion al resto
+                    publicar(new Mensaje(nuevoUsuario.nombre,"entra",Tipo.UsuarioEntra));
+
                 }
             }
             catch (IOException e)
@@ -294,13 +311,24 @@ public class ServidorChatView extends FrameView
     {
         System.out.println("Borro al usuario de la lista");
         lista.remove(user);
+
+        // Notificamos la desconexión al resto de usuarios
+
+        Mensaje m = new Mensaje();
+        m.setTipo(Tipo.UsuarioSale);
+        m.setUsuario(user.nombre);
+        m.setContenido("Usuario " + user.nombre + " desconectado");
+
+        publicar(m);
+
+
     }
 
     private void publicar(Mensaje m)
     {
         for (Usuario u : lista)
         {
-            System.out.println("Mandando mensaje a: " + u.nombre);
+            System.out.println("Mandando mensaje " + m.getTipo() + " a: " + u.nombre);
             u.enviarMensaje(m);
         }
     }
