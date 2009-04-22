@@ -7,6 +7,7 @@ import es.random.java.chat.Mensaje;
 import es.random.java.chat.Mensaje.Tipo;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Point;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -133,7 +134,7 @@ public class ClienteChatView extends FrameView {
         panelUsuarios = new javax.swing.JScrollPane();
         arbolUsuarios = new javax.swing.JTree();
         jScrollPane1 = new javax.swing.JScrollPane();
-        areaTextoMensajes = new javax.swing.JTextArea();
+        areaTextoMensajes = new javax.swing.JEditorPane();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu menuArchivo = new javax.swing.JMenu();
         javax.swing.JMenuItem elementoMenuSalir = new javax.swing.JMenuItem();
@@ -146,6 +147,8 @@ public class ClienteChatView extends FrameView {
         statusMessageLabel = new javax.swing.JLabel();
         statusAnimationLabel = new javax.swing.JLabel();
         progressBar = new javax.swing.JProgressBar();
+        menuUsuariosConectados = new javax.swing.JPopupMenu();
+        opcionEnviarPrivado = new javax.swing.JMenuItem();
 
         mainPanel.setName("mainPanel"); // NOI18N
 
@@ -189,6 +192,7 @@ public class ClienteChatView extends FrameView {
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Usuarios conectados");
         arbolUsuarios.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        arbolUsuarios.setComponentPopupMenu(menuUsuariosConectados);
         arbolUsuarios.setName("arbolUsuarios"); // NOI18N
         panelUsuarios.setViewportView(arbolUsuarios);
 
@@ -196,8 +200,8 @@ public class ClienteChatView extends FrameView {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        areaTextoMensajes.setColumns(20);
-        areaTextoMensajes.setRows(5);
+        areaTextoMensajes.setContentType(resourceMap.getString("areaTextoMensajes.contentType")); // NOI18N
+        areaTextoMensajes.setText(resourceMap.getString("areaTextoMensajes.text")); // NOI18N
         areaTextoMensajes.setName("areaTextoMensajes"); // NOI18N
         jScrollPane1.setViewportView(areaTextoMensajes);
 
@@ -209,7 +213,7 @@ public class ClienteChatView extends FrameView {
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane2)
+            .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,6 +298,17 @@ public class ClienteChatView extends FrameView {
                 .addGap(3, 3, 3))
         );
 
+        menuUsuariosConectados.setName("menuUsuariosConectados"); // NOI18N
+
+        opcionEnviarPrivado.setLabel(resourceMap.getString("opcionEnviarPrivado.label")); // NOI18N
+        opcionEnviarPrivado.setName("opcionEnviarPrivado"); // NOI18N
+        opcionEnviarPrivado.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                opcionEnviarPrivadoMouseReleased(evt);
+            }
+        });
+        menuUsuariosConectados.add(opcionEnviarPrivado);
+
         setComponent(mainPanel);
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
@@ -314,9 +329,20 @@ public class ClienteChatView extends FrameView {
                 }
             }
         } else {
-            areaTextoMensajes.append("No está conectado al servidor...\r\n");
+            areaTextoMensajes.setText(mensajesAñadeMensajeEnHtml( "No está conectado al servidor...\r\n",Tipo.Salir));
+
+
         }
     }//GEN-LAST:event_jTextField1KeyReleased
+
+    private String mensajesAñadeMensajeEnHtml(String mensaje, Tipo tipo) {
+        if((tipo == Tipo.Acceder) || (tipo == Tipo.UsuarioEntra)) {
+            mensaje = "<font color=\"green\">" + mensaje + "</font>";
+        } else if( (tipo == Tipo.Salir) || (tipo == Tipo.UsuarioSale) ) {
+            mensaje = "<font color=\"red\">" + mensaje + "</font>";
+        }
+        return areaTextoMensajes.getText().replace("</body>", mensaje + "<br/></body>");
+    }
 
     private void elementoMenuConectarMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_elementoMenuConectarMouseReleased
     {//GEN-HEADEREND:event_elementoMenuConectarMouseReleased
@@ -358,6 +384,16 @@ public class ClienteChatView extends FrameView {
         }
     }//GEN-LAST:event_elementoMenuDesconectarMouseReleased
 
+    private void opcionEnviarPrivadoMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_opcionEnviarPrivadoMouseReleased
+    {//GEN-HEADEREND:event_opcionEnviarPrivadoMouseReleased
+        Point p = evt.getPoint();
+       // arbolUsuarios.getClosestPathForLocation(p.getX(), p.getY());
+        //arbolUsuarios.getRowForLocation();
+
+        //Point punto = opcionEnviarPrivado.getPopupLocation(evt);
+
+    }//GEN-LAST:event_opcionEnviarPrivadoMouseReleased
+
     public void mensajeRecibido(String nombre, String mensaje, Tipo tipo) {
         mensajeRecibido( new Mensaje(nombre,mensaje,tipo) );
     }
@@ -371,7 +407,8 @@ public class ClienteChatView extends FrameView {
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                areaTextoMensajes.append("<html><b>" + nombre + ":</b> " + contenido + "\r\n");
+                //areaTextoMensajes.append("<html><b>" + nombre + ":</b> " + contenido + "\r\n");
+                areaTextoMensajes.setText(mensajesAñadeMensajeEnHtml("<b>" + nombre + ":</b> " + contenido, tipo));
                 if (tipo == Tipo.UsuarioEntra) {
                     DefaultMutableTreeNode top = (DefaultMutableTreeNode) arbolUsuarios.getModel().getRoot();
                     DefaultMutableTreeNode nodo = new DefaultMutableTreeNode(nombre);
@@ -433,7 +470,7 @@ public class ClienteChatView extends FrameView {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTree arbolUsuarios;
-    private javax.swing.JTextArea areaTextoMensajes;
+    private javax.swing.JEditorPane areaTextoMensajes;
     private javax.swing.JMenuItem elementoMenuConectar;
     private javax.swing.JMenuItem elementoMenuDesconectar;
     private javax.swing.JScrollPane jScrollPane1;
@@ -441,6 +478,8 @@ public class ClienteChatView extends FrameView {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPopupMenu menuUsuariosConectados;
+    private javax.swing.JMenuItem opcionEnviarPrivado;
     private javax.swing.JPanel panelInferior;
     private javax.swing.JSplitPane panelSuperior;
     private javax.swing.JScrollPane panelUsuarios;

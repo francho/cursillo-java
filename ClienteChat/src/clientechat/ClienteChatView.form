@@ -15,7 +15,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jSplitPane2" alignment="0" pref="327" max="32767" attributes="0"/>
+              <Component id="jSplitPane2" alignment="0" pref="330" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -48,9 +48,9 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="400" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="398" max="32767" attributes="0"/>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                          <Component id="jTextField1" alignment="0" pref="400" max="32767" attributes="0"/>
+                          <Component id="jTextField1" alignment="0" pref="398" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -107,6 +107,9 @@
                         <Property name="model" type="javax.swing.tree.TreeModel" editor="org.netbeans.modules.form.editors2.TreeModelEditor">
                           <TreeModel code="Usuarios conectados"/>
                         </Property>
+                        <Property name="componentPopupMenu" type="javax.swing.JPopupMenu" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                          <ComponentRef name="menuUsuariosConectados"/>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="arbolUsuarios" noResource="true"/>
                       </Properties>
                     </Component>
@@ -127,10 +130,10 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JTextArea" name="areaTextoMensajes">
+                    <Component class="javax.swing.JEditorPane" name="areaTextoMensajes">
                       <Properties>
-                        <Property name="columns" type="int" value="20"/>
-                        <Property name="rows" type="int" value="5"/>
+                        <Property name="contentType" type="java.lang.String" resourceKey="areaTextoMensajes.contentType"/>
+                        <Property name="text" type="java.lang.String" resourceKey="areaTextoMensajes.text"/>
                         <Property name="name" type="java.lang.String" value="areaTextoMensajes" noResource="true"/>
                       </Properties>
                     </Component>
@@ -233,7 +236,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusMessageLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="216" max="32767" attributes="0"/>
+                  <EmptySpace pref="230" max="32767" attributes="0"/>
                   <Component id="progressBar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusAnimationLabel" min="-2" max="-2" attributes="0"/>
@@ -282,6 +285,26 @@
             <Property name="name" type="java.lang.String" value="progressBar" noResource="true"/>
           </Properties>
         </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPopupMenu" name="menuUsuariosConectados">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="menuUsuariosConectados" noResource="true"/>
+      </Properties>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="true"/>
+      </Layout>
+      <SubComponents>
+        <MenuItem class="javax.swing.JMenuItem" name="opcionEnviarPrivado">
+          <Properties>
+            <Property name="label" type="java.lang.String" resourceKey="opcionEnviarPrivado.label"/>
+            <Property name="name" type="java.lang.String" value="opcionEnviarPrivado" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="opcionEnviarPrivadoMouseReleased"/>
+          </Events>
+        </MenuItem>
       </SubComponents>
     </Container>
   </NonVisualComponents>
