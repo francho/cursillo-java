@@ -67,7 +67,7 @@ public class Mensaje implements Serializable
 
     public enum Tipo implements Serializable
     {
-        Log,Mensaje,Acceder,Salir,UsuarioEntra,UsuarioSale
+        Log,Mensaje,MensajePrivado,Acceder,Salir,UsuarioEntra,UsuarioSale
     }
 
     public Mensaje()
@@ -89,4 +89,5 @@ public class Mensaje implements Serializable
         this(usuario,contenido);
         this.tipo = tipo;
     }
+
 }
