@@ -180,7 +180,10 @@ public class ServidorChatView extends FrameView
 
         pestañaUsuarios.setName("pestañaUsuarios"); // NOI18N
 
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Usuarios conectados");
+        arbolUsuarios.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         arbolUsuarios.setName("arbolUsuarios"); // NOI18N
+        arbolUsuarios.setRootVisible(false);
         pestañaUsuarios.setViewportView(arbolUsuarios);
 
         jTabbedPane1.addTab(resourceMap.getString("pestañaUsuarios.TabConstraints.tabTitle"), pestañaUsuarios); // NOI18N
@@ -349,8 +352,12 @@ public class ServidorChatView extends FrameView
     private void publicar(Mensaje m)
     {
         for (Usuario u : lista) {
-            System.out.println("Mandando mensaje " + m.getTipo() + " a: " + u.nombre);
-            u.enviarMensaje(m);
+            if((m.getTipo() == Tipo.MensajePrivado) && (! m.getUsuario().equals(u.nombre)) ) {
+                // me lo salto si es privado y no es para el
+            } else {
+                System.out.println("Mandando mensaje " + m.getTipo() + " a: " + u.nombre);
+                u.enviarMensaje(m);
+            }
         }
     }
 
