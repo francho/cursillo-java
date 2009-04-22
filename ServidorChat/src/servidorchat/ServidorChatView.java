@@ -5,6 +5,7 @@ package servidorchat;
 
 import es.random.java.chat.Mensaje;
 import es.random.java.chat.Mensaje.Tipo;
+import java.awt.EventQueue;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -18,7 +19,9 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Timer;
@@ -36,11 +39,13 @@ import javax.swing.JFrame;
 /**
  * The application's main frame.
  */
-public class ServidorChatView extends FrameView {
+public class ServidorChatView extends FrameView
+{
 
     private ArrayList<Usuario> lista;
 
-    public ServidorChatView(SingleFrameApplication app) {
+    public ServidorChatView(SingleFrameApplication app)
+    {
         super(app);
 
         initComponents();
@@ -49,9 +54,11 @@ public class ServidorChatView extends FrameView {
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
-        messageTimer = new Timer(messageTimeout, new ActionListener() {
+        messageTimer = new Timer(messageTimeout, new ActionListener()
+        {
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 statusMessageLabel.setText("");
             }
         });
@@ -60,9 +67,11 @@ public class ServidorChatView extends FrameView {
         for (int i = 0; i < busyIcons.length; i++) {
             busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
         }
-        busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
+        busyIconTimer = new Timer(busyAnimationRate, new ActionListener()
+        {
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
                 statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
             }
@@ -73,9 +82,11 @@ public class ServidorChatView extends FrameView {
 
         // connecting action tasks to status bar via TaskMonitor
         TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
-        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener()
+        {
 
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+            public void propertyChange(java.beans.PropertyChangeEvent evt)
+            {
                 String propertyName = evt.getPropertyName();
                 if ("started".equals(propertyName)) {
                     if (!busyIconTimer.isRunning()) {
@@ -105,7 +116,8 @@ public class ServidorChatView extends FrameView {
     }
 
     @Action
-    public void showAboutBox() {
+    public void showAboutBox()
+    {
         if (aboutBox == null) {
             JFrame mainFrame = ServidorChatApp.getApplication().getMainFrame();
             aboutBox = new ServidorChatAboutBox(mainFrame);
@@ -124,8 +136,13 @@ public class ServidorChatView extends FrameView {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        panelTexto = new javax.swing.JTextPane();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        pestañaLog = new javax.swing.JScrollPane();
+        areaTextoLog = new javax.swing.JEditorPane();
+        pestañaMensajes = new javax.swing.JScrollPane();
+        areaTextoMensajes = new javax.swing.JEditorPane();
+        pestañaUsuarios = new javax.swing.JScrollPane();
+        arbolUsuarios = new javax.swing.JTree();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu menuFichero = new javax.swing.JMenu();
         javax.swing.JMenuItem elementoMenuSalir = new javax.swing.JMenuItem();
@@ -141,30 +158,54 @@ public class ServidorChatView extends FrameView {
 
         mainPanel.setName("mainPanel"); // NOI18N
 
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
+        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
 
-        panelTexto.setEditable(false);
-        panelTexto.setName("panelTexto"); // NOI18N
-        jScrollPane1.setViewportView(panelTexto);
+        pestañaLog.setName("pestañaLog"); // NOI18N
+
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(servidorchat.ServidorChatApp.class).getContext().getResourceMap(ServidorChatView.class);
+        areaTextoLog.setContentType(resourceMap.getString("areaTextoLog.contentType")); // NOI18N
+        areaTextoLog.setEditable(false);
+        areaTextoLog.setName("areaTextoLog"); // NOI18N
+        pestañaLog.setViewportView(areaTextoLog);
+
+        jTabbedPane1.addTab(resourceMap.getString("pestañaLog.TabConstraints.tabTitle"), pestañaLog); // NOI18N
+
+        pestañaMensajes.setName("pestañaMensajes"); // NOI18N
+
+        areaTextoMensajes.setContentType(resourceMap.getString("areaTextoMensajes.contentType")); // NOI18N
+        areaTextoMensajes.setName("areaTextoMensajes"); // NOI18N
+        pestañaMensajes.setViewportView(areaTextoMensajes);
+
+        jTabbedPane1.addTab(resourceMap.getString("pestañaMensajes.TabConstraints.tabTitle"), pestañaMensajes); // NOI18N
+
+        pestañaUsuarios.setName("pestañaUsuarios"); // NOI18N
+
+        arbolUsuarios.setName("arbolUsuarios"); // NOI18N
+        pestañaUsuarios.setViewportView(arbolUsuarios);
+
+        jTabbedPane1.addTab(resourceMap.getString("pestañaUsuarios.TabConstraints.tabTitle"), pestañaUsuarios); // NOI18N
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 249, Short.MAX_VALUE)
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                .addContainerGap())
         );
+
+        jTabbedPane1.getAccessibleContext().setAccessibleName(resourceMap.getString("jTabbedPane1.AccessibleContext.accessibleName")); // NOI18N
 
         menuBar.setName("menuBar"); // NOI18N
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(servidorchat.ServidorChatApp.class).getContext().getResourceMap(ServidorChatView.class);
         menuFichero.setText(resourceMap.getString("menuFichero.text")); // NOI18N
         menuFichero.setName("menuFichero"); // NOI18N
 
@@ -214,21 +255,23 @@ public class ServidorChatView extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 230, Short.MAX_VALUE)
-                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(statusAnimationLabel)
-                .addContainerGap())
+                .addGap(121, 121, 121)
+                .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(statusAnimationLabel)
+                        .addContainerGap())))
         );
         statusPanelLayout.setVerticalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addComponent(statusPanelSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(statusMessageLabel)
                     .addComponent(statusAnimationLabel)
@@ -241,14 +284,17 @@ public class ServidorChatView extends FrameView {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
-    private class Oyente implements Runnable {
+    private class Oyente implements Runnable
+    {
 
-        public void run() {
+        public void run()
+        {
             try {
                 int i = 1;
                 ServerSocket s = new ServerSocket(4321);
 
                 while (true) {
+                    muestraMensaje(new Mensaje("*servidor*", "Me pongo a la escucha", Tipo.Log));
                     System.out.println("Me pongo a la escucha");
                     Socket incoming = s.accept();
                     System.out.println("Nueva conexion establecida");
@@ -283,7 +329,8 @@ public class ServidorChatView extends FrameView {
         t.start();
     }//GEN-LAST:event_iniciar
 
-    private void notificarDesconexion(Usuario user) {
+    private void notificarDesconexion(Usuario user)
+    {
         System.out.println("Borro al usuario de la lista");
         lista.remove(user);
 
@@ -292,14 +339,15 @@ public class ServidorChatView extends FrameView {
         Mensaje m = new Mensaje();
         m.setTipo(Tipo.UsuarioSale);
         m.setUsuario(user.nombre);
-        m.setContenido("Usuario " + user.nombre + " desconectado");
+        m.setContenido("Usuario desconectado");
 
         publicar(m);
 
 
     }
 
-    private void publicar(Mensaje m) {
+    private void publicar(Mensaje m)
+    {
         for (Usuario u : lista) {
             System.out.println("Mandando mensaje " + m.getTipo() + " a: " + u.nombre);
             u.enviarMensaje(m);
@@ -307,12 +355,17 @@ public class ServidorChatView extends FrameView {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTree arbolUsuarios;
+    private javax.swing.JEditorPane areaTextoLog;
+    private javax.swing.JEditorPane areaTextoMensajes;
     private javax.swing.JMenuItem elementoMenuApagar;
     private javax.swing.JMenuItem elementoMenuIniciar;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JTextPane panelTexto;
+    private javax.swing.JScrollPane pestañaLog;
+    private javax.swing.JScrollPane pestañaMensajes;
+    private javax.swing.JScrollPane pestañaUsuarios;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
@@ -325,20 +378,23 @@ public class ServidorChatView extends FrameView {
     private int busyIconIndex = 0;
     private JDialog aboutBox;
 
-    public class Usuario implements Runnable {
+    public class Usuario implements Runnable
+    {
 
         private String nombre;
         private Socket puerto;
         private ObjectOutputStream escritor;
         private ObjectInputStream lector;
 
-        public Usuario(String nombre, Socket puerto) {
+        public Usuario(String nombre, Socket puerto)
+        {
             this.nombre = nombre;
             this.puerto = puerto;
             inicializarFlujos();
         }
 
-        private void inicializarFlujos() {
+        private void inicializarFlujos()
+        {
             try {
                 if (puerto != null) {
                     System.out.println("El socket no es nulo");
@@ -367,16 +423,19 @@ public class ServidorChatView extends FrameView {
             }
         }
 
-        public void enviarMensaje(Mensaje nuevoMensaje) {
+        public void enviarMensaje(Mensaje nuevoMensaje)
+        {
             try {
                 escritor.writeObject(nuevoMensaje);
                 escritor.flush();
+                muestraMensaje(nuevoMensaje);
             } catch (IOException ex) {
                 Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        public void run() {
+        public void run()
+        {
             Mensaje nuevoMensaje = new Mensaje();
             do {
                 try {
@@ -402,5 +461,81 @@ public class ServidorChatView extends FrameView {
                 Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    /**
+     * Muestra un mensaje formateado con HTML en el tab que le corresponda
+     *
+     * @param m mensaje a mostrar
+     */
+    public void muestraMensaje(Mensaje m)
+    {
+        DateFormat df = DateFormat.getDateTimeInstance( DateFormat.MEDIUM, DateFormat.MEDIUM );
+
+        String html = "<small>";
+        html += df.format(new Date());
+        html += ":</small> ";
+        html += "<b>[" + m.getUsuario() + "]</b> ";
+        html += m.getContenido();
+
+        if(m.getTipo() == Tipo.Mensaje) {
+            mensajeAñadeEnHtml(html, m.getTipo());
+        } else {
+            logAñadeEnHtml(html, m.getTipo());
+        }
+    }
+
+    /**
+     * Añade un mensaje formateado con html al final del tab de log
+     *
+     * @param mensaje texto, puede llevar html
+     * @param tipo tipo de mensaje
+     */
+    private void logAñadeEnHtml(final String mensaje, final Tipo tipo)
+    {
+        EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                areaTextoLog.setText(añadeEnHtml(areaTextoLog.getText(), mensaje, tipo));
+            }
+        });
+
+    }
+    /**
+     * Añade un mensaje formateado con html al final del tab de mensajes
+     *
+     * @param mensaje texto, puede llevar html
+     * @param tipo tipo de mensaje
+     */
+    private void mensajeAñadeEnHtml(final String mensaje, final Tipo tipo)
+    {
+        EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                areaTextoMensajes.setText(añadeEnHtml(areaTextoMensajes.getText(), mensaje, tipo));
+            }
+        });
+
+    }
+
+    /**
+     * Crea un nuevo contenido html añadiendo el nuevo mensaje antes del body (al final del cuerpo)
+     * para que pueda ser colocado machacando el contenido actual de un JEditorPane o similar
+     *
+     * @param html contenido actual del campo
+     * @param mensaje nuevo mensaje a añadir
+     * @param tipo dependiendo del tipo le da un color u otro
+     * @return
+     */
+    private String añadeEnHtml(String html, String mensaje, Tipo tipo)
+    {
+        if ((tipo == Tipo.Acceder) || (tipo == Tipo.UsuarioEntra)) {
+            mensaje = "<font color=\"green\">" + mensaje + "</font>";
+        } else if ((tipo == Tipo.Salir) || (tipo == Tipo.UsuarioSale)) {
+            mensaje = "<font color=\"red\">" + mensaje + "</font>";
+        }
+        return html.replace("</body>", mensaje + "<br/></body>");
     }
 }
