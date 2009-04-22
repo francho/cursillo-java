@@ -27,6 +27,7 @@ import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -149,6 +150,13 @@ public class ClienteChatView extends FrameView {
         progressBar = new javax.swing.JProgressBar();
         menuUsuariosConectados = new javax.swing.JPopupMenu();
         opcionEnviarPrivado = new javax.swing.JMenuItem();
+        dialogPrivado = new javax.swing.JDialog();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jSplitPane3 = new javax.swing.JSplitPane();
+        labelDestinatario = new javax.swing.JLabel();
+        inputMensaje = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
+        botonEnviar = new javax.swing.JButton();
 
         mainPanel.setName("mainPanel"); // NOI18N
 
@@ -192,8 +200,12 @@ public class ClienteChatView extends FrameView {
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Usuarios conectados");
         arbolUsuarios.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        arbolUsuarios.setComponentPopupMenu(menuUsuariosConectados);
         arbolUsuarios.setName("arbolUsuarios"); // NOI18N
+        arbolUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                arbolUsuariosMouseReleased(evt);
+            }
+        });
         panelUsuarios.setViewportView(arbolUsuarios);
 
         panelSuperior.setLeftComponent(panelUsuarios);
@@ -309,6 +321,68 @@ public class ClienteChatView extends FrameView {
         });
         menuUsuariosConectados.add(opcionEnviarPrivado);
 
+        dialogPrivado.setName("dialogPrivado"); // NOI18N
+
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane1.setName("jSplitPane1"); // NOI18N
+
+        jSplitPane3.setName("jSplitPane3"); // NOI18N
+
+        labelDestinatario.setText(resourceMap.getString("labelDestinatario.text")); // NOI18N
+        labelDestinatario.setName("labelDestinatario"); // NOI18N
+        jSplitPane3.setLeftComponent(labelDestinatario);
+
+        inputMensaje.setText(resourceMap.getString("inputMensaje.text")); // NOI18N
+        inputMensaje.setName("inputMensaje"); // NOI18N
+        jSplitPane3.setRightComponent(inputMensaje);
+
+        jSplitPane1.setLeftComponent(jSplitPane3);
+
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        botonEnviar.setText(resourceMap.getString("botonEnviar.text")); // NOI18N
+        botonEnviar.setName("botonEnviar"); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(135, Short.MAX_VALUE)
+                .addComponent(botonEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(botonEnviar)
+                .addContainerGap(32, Short.MAX_VALUE))
+        );
+
+        jSplitPane1.setRightComponent(jPanel1);
+
+        javax.swing.GroupLayout dialogPrivadoLayout = new javax.swing.GroupLayout(dialogPrivado.getContentPane());
+        dialogPrivado.getContentPane().setLayout(dialogPrivadoLayout);
+        dialogPrivadoLayout.setHorizontalGroup(
+            dialogPrivadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(dialogPrivadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(dialogPrivadoLayout.createSequentialGroup()
+                    .addGap(63, 63, 63)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(77, Short.MAX_VALUE)))
+        );
+        dialogPrivadoLayout.setVerticalGroup(
+            dialogPrivadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(dialogPrivadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(dialogPrivadoLayout.createSequentialGroup()
+                    .addGap(69, 69, 69)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(133, Short.MAX_VALUE)))
+        );
+
         setComponent(mainPanel);
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
@@ -338,6 +412,8 @@ public class ClienteChatView extends FrameView {
     private String mensajesAñadeMensajeEnHtml(String mensaje, Tipo tipo) {
         if((tipo == Tipo.Acceder) || (tipo == Tipo.UsuarioEntra)) {
             mensaje = "<font color=\"green\">" + mensaje + "</font>";
+        } else if( (tipo == Tipo.MensajePrivado) ) {
+            mensaje = "<i><font color=\"blue\">" + mensaje + "</font></i>";
         } else if( (tipo == Tipo.Salir) || (tipo == Tipo.UsuarioSale) ) {
             mensaje = "<font color=\"red\">" + mensaje + "</font>";
         }
@@ -355,6 +431,7 @@ public class ClienteChatView extends FrameView {
             escritor.writeObject(new Mensaje(usuario, "", Tipo.Acceder));
             escritor.flush();
             conectado = true;
+            
         } catch (IOException ex) {
             Logger.getLogger(ClienteChatView.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -386,13 +463,40 @@ public class ClienteChatView extends FrameView {
 
     private void opcionEnviarPrivadoMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_opcionEnviarPrivadoMouseReleased
     {//GEN-HEADEREND:event_opcionEnviarPrivadoMouseReleased
-        Point p = evt.getPoint();
-       // arbolUsuarios.getClosestPathForLocation(p.getX(), p.getY());
+        final DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) (arbolUsuarios.getSelectionPath().getLastPathComponent());
+
+        if(nodo != null) {
+            String mPrivado = JOptionPane.showInputDialog(mainPanel, "Para " + nodo + ":");
+
+            if(! mPrivado.equals(null)) {
+                try {
+                    escritor.writeObject(new Mensaje(nodo.toString(), "Privado de " + usuario + ":: " + mPrivado, Tipo.MensajePrivado));
+                } catch (IOException ex) {
+                    Logger.getLogger(ClienteChatView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
         //arbolUsuarios.getRowForLocation();
 
         //Point punto = opcionEnviarPrivado.getPopupLocation(evt);
 
     }//GEN-LAST:event_opcionEnviarPrivadoMouseReleased
+
+    private void arbolUsuariosMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_arbolUsuariosMouseReleased
+    {//GEN-HEADEREND:event_arbolUsuariosMouseReleased
+         Point p = evt.getPoint();
+
+        TreePath path = arbolUsuarios.getClosestPathForLocation(p.x, p.y);
+        if(path != null) {
+            // Nos aseguremos de que quede seleccionado el usuario sobre el que estamos
+            arbolUsuarios.setSelectionPath(path);
+            //DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) (path.getLastPathComponent());
+
+            // Mostramos el menu contextual
+            menuUsuariosConectados.show(arbolUsuarios, p.x, p.y);
+        }
+
+    }//GEN-LAST:event_arbolUsuariosMouseReleased
 
     public void mensajeRecibido(String nombre, String mensaje, Tipo tipo) {
         mensajeRecibido( new Mensaje(nombre,mensaje,tipo) );
@@ -471,11 +575,18 @@ public class ClienteChatView extends FrameView {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTree arbolUsuarios;
     private javax.swing.JEditorPane areaTextoMensajes;
+    private javax.swing.JButton botonEnviar;
+    private javax.swing.JDialog dialogPrivado;
     private javax.swing.JMenuItem elementoMenuConectar;
     private javax.swing.JMenuItem elementoMenuDesconectar;
+    private javax.swing.JTextField inputMensaje;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel labelDestinatario;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPopupMenu menuUsuariosConectados;
