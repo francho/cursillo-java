@@ -5,6 +5,8 @@
 
 package ejerciciodbempleados;
 
+import java.util.Vector;
+
 /**
  *
  * @author: $Author$
@@ -21,10 +23,18 @@ public class Main {
         EmpleadosBD db = new EmpleadosBD();
 
         db.crearConexion();
+        //db.crearDB();
 
-        db.insertarEmpleado("Pepe Lopez", 10);
+        db.añadirEmpleado("Pepe Lopez", 10);
 
-        db.actualizarEmpleado(1, "Mr Potato", 3);
+        db.modificarEmpleado(1, "Mr Potato", 3);
+
+        Vector<Empleado> empleados = new Vector<Empleado>();
+        empleados.add( new Empleado(10, "Mr T", 2) );
+        empleados.add( new Empleado(11, "Ross Mary", 2) );
+        empleados.add( new Empleado(12, "M.A.", 4) );
+
+        db.cargarEmpleados(empleados);
 
     }
 

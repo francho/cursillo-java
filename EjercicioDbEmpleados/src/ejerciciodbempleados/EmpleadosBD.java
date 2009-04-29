@@ -7,6 +7,8 @@ package ejerciciodbempleados;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.derby.client.am.ResultSet;
@@ -21,6 +23,7 @@ import org.apache.derby.client.am.Statement;
  */
 public class EmpleadosBD
 {
+
     Connection conexion;
 
     public EmpleadosBD()
@@ -56,48 +59,43 @@ public class EmpleadosBD
      * @param nombre del empleado
      * @param idPuesto identificador del puesto donde va a estar
      */
-    public void insertarEmpleado(String nombre, int idPuesto) {
+    public void añadirEmpleado(String nombre, int idPuesto)
+    {
         try {
             // Variables que vamos a usar intermanente
-            String sql;
-            int afectadas;
+            int afectadas = 0;
             // vamos a usar transacciones
             conexion.setAutoCommit(false);
             Statement orden = (Statement) conexion.createStatement();
 
-            int id = siguienteId("empleados");
-            sql = "INSERT INTO Empleados(ID,nombre,puesto) VALUES("+ id +",'"+ nombre +"'," + idPuesto + ")";
-            afectadas = orden.executeUpdate(sql);
+            int id = this.siguienteId("Empleados");
 
-            if(afectadas != 1) {
-                conexion.rollback();
-            } else {
-                sql = "INSERT INTO Registro(IDempleado, IDOrigen, IDDestino) VALUES (" + id + "," + 0 + "," + idPuesto + ")";
-
-                afectadas =  orden.executeUpdate(sql);
-
-                if(afectadas != 1) {
-                    conexion.rollback();
-                } else {
-                    conexion.commit();
-                }
-            }
+            afectadas = orden.executeUpdate(sqlInsertEmpleados(id, nombre, idPuesto));
+            afectadas = orden.executeUpdate(sqlInsertRegistro(id, 0, idPuesto));
+            conexion.commit();
 
             orden.close();
 
         } catch (SQLException ex) {
-            Logger.getLogger(EmpleadosBD.class.getName()).log(Level.SEVERE, null, ex);
             try {
                 conexion.rollback();
             } catch (SQLException ex1) {
-                Logger.getLogger(EmpleadosBD.class.getName()).log(Level.SEVERE, null, ex1);
+                mostrarErrorDB(ex1);
             }
+            mostrarErrorDB(ex);
+
         }
-
-
     }
 
-    public void actualizarEmpleado(int idEmpleado, String nombre, int idPuestoNuevo) {
+    /**
+     * Modifica un empleazo en la BD y guarda un registro con el movimiento
+     *
+     * @param idEmpleado identificador del empleado a modificar
+     * @param nombreNuevo nombre del empleado
+     * @param idPuestoNuevo nuevo puesto
+     */
+    public void modificarEmpleado(int idEmpleado, String nombreNuevo, int idPuestoNuevo)
+    {
         try {
             // vamos a usar transacciones
             conexion.setAutoCommit(false);
@@ -105,19 +103,19 @@ public class EmpleadosBD
 
             String sql;
 
-            sql = "SELECT puesto FROM empleados WHERE id="+idEmpleado;
+            sql = "SELECT localizacion FROM empleados WHERE id=" + idEmpleado;
 
             ResultSet rs = (ResultSet) orden.executeQuery(sql);
 
             int idPuestoViejo = -1;
-            while(rs.next()) {
-                idPuestoViejo = rs.getInt("puesto");
+            while (rs.next()) {
+                idPuestoViejo = rs.getInt("localizacion");
             }
 
-            sql = "UPDATE empleados SET puesto = " + idPuestoNuevo + ", nombre='"+ nombre +"' WHERE(id = " + idEmpleado + ")";
-            if(orden.executeUpdate(sql) > 0 ) {
+            sql = "UPDATE empleados SET localizacion = " + idPuestoNuevo + ", nombre='" + nombreNuevo + "' WHERE(id = " + idEmpleado + ")";
+            if (orden.executeUpdate(sql) > 0) {
                 sql = "INSERT INTO Registro(IDempleado, IDOrigen, IDDestino) VALUES (" + idEmpleado + "," + idPuestoViejo + "," + idPuestoNuevo + ")";
-                if(orden.executeUpdate(sql) > 0) {
+                if (orden.executeUpdate(sql) > 0) {
                     conexion.commit();
                 } else {
                     conexion.rollback();
@@ -130,13 +128,73 @@ public class EmpleadosBD
 
 
         } catch (SQLException ex) {
-            Logger.getLogger(EmpleadosBD.class.getName()).log(Level.SEVERE, null, ex);
             try {
                 conexion.rollback();
             } catch (SQLException ex1) {
-                Logger.getLogger(EmpleadosBD.class.getName()).log(Level.SEVERE, null, ex1);
+                mostrarErrorDB(ex1);
             }
+
+            mostrarErrorDB(ex);
+
         }
+    }
+
+    /**
+     * Importa una coleccion a nuestra base de datos
+     *
+     * @param empleados Vector con los empleados a importar
+     */
+    public void cargarEmpleados(Vector<Empleado> empleados)
+    {
+        try {
+            String sql;
+
+            conexion.setAutoCommit(false);
+            Statement orden = (Statement) conexion.createStatement();
+            Iterator<Empleado> itEmp = empleados.iterator();
+            while (itEmp.hasNext()) {
+                Empleado e = itEmp.next();
+
+                sql = sqlInsertEmpleados(e.getId(), e.getNombre(), e.getLocalizacion());
+                orden.addBatch(sql);
+
+                sql = sqlInsertRegistro(e.getId(), 0, e.getLocalizacion());
+                orden.addBatch(sql);
+            }
+            orden.executeBatch();
+            conexion.commit();
+        } catch (SQLException ex) {
+            try {
+                conexion.rollback();
+            } catch (SQLException ex1) {
+                mostrarErrorDB(ex1);
+            }
+            mostrarErrorDB(ex);
+        }
+    }
+
+    /**
+     * Muestra por la consola los detalles de una exceción SQL
+     * @param ex excepcion derivada del error
+     */
+    public void mostrarErrorDB(SQLException ex)
+    {
+        System.out.println("-------------------------------------------------");
+        System.out.println("              ¡¡¡ Error de BD !!!");
+        System.out.println("-------------------------------------------------");
+
+        while (ex != null) {
+            System.out.println("Código: " + ex.getErrorCode());
+            System.out.println("Detalles: " + ex.getMessage());
+            System.out.println("Estado: " + ex.getSQLState());
+            System.out.println("");
+
+            //Logger.getLogger(EmpleadosBD.class.getName()).log(Level.SEVERE, null, ex);
+
+            ex = ex.getNextException();
+        }
+
+        System.out.println("-------------------------------------------------");
     }
 
     /**
@@ -146,7 +204,8 @@ public class EmpleadosBD
      *
      * @return el siguiente id
      */
-        public int siguienteId(String tabla) {
+    public int siguienteId(String tabla)
+    {
         int id = -1;
         try {
             Statement orden;
@@ -157,32 +216,90 @@ public class EmpleadosBD
             while (rs.next()) {
                 id = rs.getInt("id");
             }
+            // Añadimos 1 al último id
             id++;
             rs.close();
             orden.close();
 
         } catch (SQLException ex) {
-            Logger.getLogger(EmpleadosBD.class.getName()).log(Level.SEVERE, null, ex);
+            mostrarErrorDB(ex);
         }
         return id;
     }
 
-    public void crearDB() {
-        String sql = "CREATE TABLE empleados )" +
-                "id INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 5 INCREMENT BY 1)," +
-                "nombre VARCHAR(50) NOT NULL," +
-                "puesto INT" +
-                ") " +
-                "PRIMARY KEY (ID) ";
+    /**
+     * Crea la estructura de la BBDD
+     */
+    public void crearDB()
+    {
+        Statement orden;
 
-        /*
-         * puestos ( id, pais, puesto)
-         * registro( idusuario, idviejo, id nuevo)
-         *
-         */
+        try {
+            orden = (Statement) conexion.createStatement();
+            String sql = "CREATE TABLE empleados (" +
+                    // "id INT NOT NULL GENERATED ALWAYS AS IDENTITY," +
+                    "id INT NOT NULL," +
+                    "nombre VARCHAR(50) NOT NULL," +
+                    "localizacion INT, " +
+                    "PRIMARY KEY(id) )";
+            orden.executeUpdate(sql);
 
+            sql = "CREATE TABLE puestos (" +
+                    "id INT NOT NULL GENERATED ALWAYS AS IDENTITY," +
+                    "pais VARCHAR(50)," +
+                    "departamento VARCHAR(50)" +
+                    ")";
 
+            orden.executeUpdate(sql);
 
+            conexion.setAutoCommit(false);
+            orden.addBatch("INSERT INTO puestos(pais,departamento) VALUES('desconocido','desconocido')");
+            orden.addBatch("INSERT INTO puestos(pais,departamento) VALUES('España','Dirección')");
+            orden.addBatch("INSERT INTO puestos(pais,departamento) VALUES('España','Administración')");
+            orden.addBatch("INSERT INTO puestos(pais,departamento) VALUES('España','Recepción')");
+            orden.addBatch("INSERT INTO puestos(pais,departamento) VALUES('España','Contabilidad')");
+            orden.addBatch("INSERT INTO puestos(pais,departamento) VALUES('España','Almacén')");
+            orden.executeBatch();
+            conexion.commit();
+            conexion.setAutoCommit(true);
+
+            sql = "CREATE TABLE registro (" +
+                    "idempleado INT," +
+                    "idorigen INT," +
+                    "iddestino INT" +
+                    ")";
+
+            orden.executeUpdate(sql);
+
+            orden.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmpleadosBD.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    /**
+     * Genera la SQL de insercción de empleado
+     *
+     * @param id
+     * @param nombre
+     * @param idPuesto
+     * @return SQL listo para ser pasado al SGBD
+     */
+    public String sqlInsertEmpleados(int id, String nombre, int idPuesto)
+    {
+        return "INSERT INTO Empleados(id,nombre,localizacion) VALUES(" + id + ",'" + nombre + "'," + idPuesto + ")";
+    }
+
+    /**
+     * Genera la SQL de insercción de registro
+     *
+     * @param idEmpleado
+     * @param idOrigen
+     * @param idDestino
+     * @return SQL listo para ser pasado a SGBD
+     */
+    public String sqlInsertRegistro(int idEmpleado, int idOrigen, int idDestino)
+    {
+        return "INSERT INTO Registro(IDempleado, IDOrigen, IDDestino) VALUES (" + idEmpleado + "," + idOrigen + "," + idDestino + ")";
+    }
 }
