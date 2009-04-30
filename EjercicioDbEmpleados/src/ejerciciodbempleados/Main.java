@@ -20,7 +20,9 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        EmpleadosBD db = new EmpleadosBD();
+        UtilesContexto contextoUtiles = new UtilesContexto("localhost",1527,"empleados","usuario","clave","jbdc/empleados");
+        contextoUtiles.crearContexto();
+        /*EmpleadosBD db = new EmpleadosBD();
 
         db.crearConexion();
         //db.crearDB();
@@ -34,8 +36,6 @@ public class Main {
         empleados.add( new Empleado(11, "Ross Mary", 2) );
         empleados.add( new Empleado(12, "M.A.", 4) );
 
-        db.cargarEmpleados(empleados);
-
-    }
+        db.cargarEmpleados(empleados);*/    }
 
 }
