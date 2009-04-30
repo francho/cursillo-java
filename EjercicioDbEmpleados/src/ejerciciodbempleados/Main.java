@@ -20,11 +20,16 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        UtilesContexto contextoUtiles = new UtilesContexto("localhost",1527,"empleados","usuario","clave","jbdc/empleados");
+        // descomentar este bloque para crear la fuente de datos (solo es necesario una vez). En windows puede dar problema de permisos
+         UtilesContexto contextoUtiles = new UtilesContexto("localhost",1527,"empleados","usuario","clave","jdbc/empleados");
         contextoUtiles.crearContexto();
-        /*EmpleadosBD db = new EmpleadosBD();
+        // fin crear contexto
 
-        db.crearConexion();
+
+        //EmpleadosBd db = new EmpleadosBd();
+
+        EmpleadosBdFuenteDatos db = new EmpleadosBdFuenteDatos();
+
         //db.crearDB();
 
         db.añadirEmpleado("Pepe Lopez", 10);
@@ -36,6 +41,7 @@ public class Main {
         empleados.add( new Empleado(11, "Ross Mary", 2) );
         empleados.add( new Empleado(12, "M.A.", 4) );
 
-        db.cargarEmpleados(empleados);*/    }
+        db.cargarEmpleados(empleados);
+    }
 
 }
