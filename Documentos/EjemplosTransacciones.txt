@@ -1,0 +1,180 @@
+
+    public void establecerSavePoints()
+    {
+        Statement orden = null;
+        try
+        {
+            // desactivamos el método de autoentrega.
+            conexion.setAutoCommit(false);
+            orden = (Statement) conexion.createStatement();
+            int i = 10;
+            // Insertamos tres registros en la tabla de usuarios
+            orden.executeUpdate("INSERT INTO elementos  VALUES (" + i + ",'Alarico')");
+            i++;
+            orden.executeUpdate("INSERT INTO elementos  VALUES (" + i + ",'Alarico')");
+            i++;
+            orden.executeUpdate("INSERT INTO elementos  VALUES (" + i + ",'Alarico')");
+            i++;
+            // Creamos un punto de salvaguarda en este momento.
+            Savepoint sp = (Savepoint) conexion.setSavepoint("PUNTO1");
+            // Insertamos tres registros mas en la tabla de usuarios
+            orden.executeUpdate("INSERT INTO elementos  VALUES (" + i + ",'Witerico')");
+            i++;
+            orden.executeUpdate("INSERT INTO elementos  VALUES (" + i + ",'Witerico')");
+            i++;
+            orden.executeUpdate("INSERT INTO elementos  VALUES (" + i + ",'Witerico')");
+            i++;
+            // Hacemos un rollback al punto PUNTO1:
+            conexion.rollback(sp);
+            // Entregamos los cambios anteriores a punto1 a la BBDD:
+            // Insertamos tres registros mas en la tabla de usuarios
+            orden.executeUpdate("INSERT INTO elementos  VALUES (" + i + ",'Chindasvinta')");
+            i++;
+            orden.executeUpdate("INSERT INTO elementos  VALUES (" + i + ",'Chindasvinta')");
+            i++;
+            orden.executeUpdate("INSERT INTO elementos  VALUES (" + i + ",'Chindasvinta')");
+            i++;
+            conexion.releaseSavepoint(sp);
+            conexion.commit();
+        }
+        catch (SQLException e)
+        {
+	    conexion.rollback();
+            e.printStackTrace();
+        }
+        finally
+        {
+            if (orden != null)
+            {
+                try
+                {
+                    orden.close();
+                }
+                catch (SQLException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+	    conexion.setAutoCommit(true);
+        }
+    }
+
+
+
+
+
+    public void ejecutarTransaccion()
+    {
+        int estado = -1;
+
+        try
+        {
+            estado = conexion.getTransactionIsolation();
+            conexion.setAutoCommit(false);
+            System.out.println("Nivel de aislamiento: " + estado);
+            if (!(estado == java.sql.Connection.TRANSACTION_SERIALIZABLE))
+            {
+                conexion.setTransactionIsolation(java.sql.Connection.TRANSACTION_SERIALIZABLE);
+            }
+            System.out.println("Nivel de aislamiento: " + conexion.getTransactionIsolation());
+            for (int i = 1; i < 4; i++)
+            {
+                Statement st = (Statement) conexion.createStatement();
+                st.executeUpdate("insert into elementos (id_elemento,nombre) values (" + i + ",'Steve')");
+            }
+            conexion.commit();
+        }
+        catch (Exception ex)
+        {
+            try
+            {
+                conexion.rollback();
+                Logger.getLogger(AccesoDerby.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (SQLException ex1)
+            {
+                Logger.getLogger(AccesoDerby.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+        finally
+        {
+            try
+            {
+                if (estado != -1)
+                {
+                    conexion.setTransactionIsolation(estado);
+                }
+                conexion.setAutoCommit(true);
+            }
+            catch (SQLException e)
+            {
+                System.out.println("Error al realizar las operaciones finales");
+            }
+        }
+        System.out.println("Nivel de aislamiento: " + estado);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public void ejecutarLote()
+    {
+        int estado = -1;
+
+        try
+        {
+            estado = conexion.getTransactionIsolation();
+            conexion.setAutoCommit(false);
+            System.out.println("Nivel de aislamiento: " + estado);
+            if (!(estado == java.sql.Connection.TRANSACTION_SERIALIZABLE))
+            {
+                conexion.setTransactionIsolation(java.sql.Connection.TRANSACTION_SERIALIZABLE);
+            }
+            System.out.println("Nivel de aislamiento: " + conexion.getTransactionIsolation());
+            Statement st = (Statement) conexion.createStatement();
+            st.addBatch("update elementos set nombre='Joe' where nombre='JoeBis'");
+            st.addBatch("update elementos set nombre='Mat' where nombre='MatBis'");
+            st.addBatch("update elementos set nombre='Steve' where nombre='SteveBis'");
+            int[] filasAfectadas = st.executeBatch();
+            for (int i = 0; i < filasAfectadas.length; i++)
+            {
+                System.out.println("Filas afectadas por la operacion número " + i + ": " + filasAfectadas[i]);
+            }
+            conexion.commit();
+        }
+        catch (Exception ex)
+        {
+            try
+            {
+                conexion.rollback();
+                Logger.getLogger(AccesoDerby.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (SQLException ex1)
+            {
+                Logger.getLogger(AccesoDerby.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+        finally
+        {
+            try
+            {
+                if (estado != -1)
+                {
+                    conexion.setTransactionIsolation(estado);
+                }
+                conexion.setAutoCommit(true);
+            }
+            catch (SQLException e)
+            {
+                System.out.println("Error al realizar las operaciones finales");
+            }
+        }
+        System.out.println("Nivel de aislamiento: " + estado);
+    }
