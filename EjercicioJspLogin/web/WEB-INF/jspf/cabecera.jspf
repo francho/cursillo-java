@@ -1,0 +1,19 @@
+<div id="pagina">
+
+<div id="cabecera">
+    <%
+        if (session.getAttribute("login") == null) {
+            out.println("usuario no identificado<br>");
+            out.println("<a href=\"index.jsp\">Inicio</a> | ");
+            out.println("<a href=\"login.jsp\">Identificarse</a>");
+        } else {
+            out.println("Bienvenido, <b>" + session.getAttribute("login") + "</b><br>");
+            out.println("<a href=\"index.jsp\">Inicio</a> | ");
+            out.println("<a href=\"logout.jsp\">Salir</a>");
+        }
+    %>
+</div>
+
+<div id="cuerpo">
+    <h1><%= titulo %></h1>
+

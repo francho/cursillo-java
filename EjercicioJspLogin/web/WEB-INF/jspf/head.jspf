@@ -1,0 +1,29 @@
+        <style type="text/css">
+           body { font-family: Helvetica, sans-serif; font-size: 10px; }
+           #pagina { 
+               width: 400px;
+               margin: 0px auto;
+               margin-top: 40px;
+               border:1px dotted green;
+               padding: 0px;
+           }
+           #cabecera { 
+               background-color: #aaffaa ;
+               margin: 0px;
+               margin-bottom: 5px;
+               text-align: right;
+               padding: 3px;
+           }
+
+           #cuerpo {
+               text-align: center;
+               padding: 5px;
+           }
+
+           #cuerpo p {               
+               text-align: justify;
+               color: #004400;
+           }
+           #pie p { text-align: center}
+        </style>
+        <title><% out.println(titulo); %></title>
