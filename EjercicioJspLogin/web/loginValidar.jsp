@@ -1,24 +1,33 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="es.fchx.login.Usuarios" %>
 <%! String titulo;%>
+<jsp:useBean id="usuario" scope="page" class="es.fchx.login.UsuarioBean">
+    <jsp:setProperty name="usuario" property="*"/>
+</jsp:useBean>
 <%
+        Usuarios usuarios = new Usuarios();
 
-
-        String login = request.getParameter("login");
-        if (login != null && !login.equals("")) {
-
+        if (usuarios.usuarioAutentificado(usuario)) {
             HttpSession sesion = request.getSession(true);
-            sesion.setAttribute("login", login);
+            sesion.setAttribute("login", usuario.getLogin());
 
-            titulo = "Bienvenido " + login;
+            titulo = "Bienvenido " + usuario.getLogin();
 
             String urlAnterior = (String) sesion.getAttribute("referer");
+            if (urlAnterior == null) {
+                urlAnterior = "/";
+            } 
 
             out.println("Redirigiendo a " + urlAnterior + "...");
 
+        
             response.sendRedirect(urlAnterior);
 
+         // Otra forma de hacerlo (pero tendriamos que convertir la url a relativa a lcontexto
+        /* %><jsp:forward page="/<%=urlAnterior%>" /><% */
 
         } else {
-           titulo = "Error de autentificacion";
+            titulo = "Error de autentificacion";
 
 %>
 <%--
@@ -26,8 +35,6 @@
     Created on : 06-may-2009, 10:36:04
     Author     : Administrador
 --%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 
